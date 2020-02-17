@@ -71,7 +71,7 @@ void ofApp::setup() {
 	world.setCamera(&cam);
 
 	
-	ground.create(world.world, ofVec3f(xGround / 2, yGround / 2, zGround / 2), 0, xGround, yGround+overflow, zGround);
+	ground.create(world.world, ofVec3f(xGround / 2, yGround / 2, zGround / 2), 0, xGround, yGround, zGround);
 	ground.setProperties(.25, .95);
 	ground.add();
 
@@ -90,7 +90,7 @@ void ofApp::setup() {
 	back1.add();
 
 
-	target.create(world.world, ofVec3f(xGround / 2, yBack1 / 2 + yTarget / 2, 0), 0, xTarget, yTarget + overflow, zTarget);
+	target.create(world.world, ofVec3f(xGround / 2, yBack1 / 2 + yTarget / 2, 0), 0, xTarget, yTarget, zTarget);
 	target.setProperties(.25, .95);
 	target.add();
 
@@ -112,6 +112,21 @@ void ofApp::setup() {
 	left.setProperties(.25, .95);
 	left.add();
 
+	//OSTACOLO livello 6
+	ostacolo6.create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
+	ostacolo6.setProperties(.25, .95);
+	ostacolo6.add();
+
+	//OSTACOLO livello 7
+	ostacolo7.create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
+	ostacolo7.setProperties(.25, .95);
+	ostacolo7.add();
+
+
+	//OSTACOLO LIVELLO 9
+	ostacolo9.create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
+	ostacolo9.setProperties(.25, .95);
+	ostacolo9.add();
 
 	//play();
 
@@ -263,6 +278,29 @@ void ofApp::draw() {
 			textureGround.bind(); 
 			ground.draw();
 			textureGround.unbind();
+			
+			ofSetColor(255, 0, 0);
+			if (levels == 6) {
+
+				ostacolo6.draw();
+			}
+			
+			if (levels == 7) {
+
+				ostacolo7.draw();
+			}
+			
+			if (levels == 8) {
+				ostacolo6.draw();
+				ostacolo7.draw();
+
+			}
+
+			if (levels == 9) {
+
+				ostacolo9.draw();
+			}
+			
 
 			ofNoFill();
 			ceiling.draw();

@@ -171,12 +171,53 @@ public:
 	bool checkLevel4 = false;
 	bool reverseLevel4 = false;
 
+	/*LEVEL 6*/
+	void level6();
+	bool checkLevel6 = false;
+	bool reverseLevel6 = false;
+
+	// OSTACOLO 6//
+	int xOst6 = 40;
+	int yOst6 = yBack1/2;
+	int zOst6 = 5;
+	ofxBulletBox ostacolo6;
+
+	/*LEVEL 7*/
+	void level7();
+	bool checkLevel7 = false;
+	bool reverseLevel7 = false;
+
+	// OSTACOLO 7//
+	int xOst7 = xGround;
+	int yOst7 = yBack1 / 2;
+	int zOst7 = yGround;
+	ofxBulletBox ostacolo7;
+
+
+	/*LEVEL 8*/
+	void level8();
+	bool checkLevel8 = false;
+	bool reverseLevel8 = false;
+
+
+	/*LEVEL 9*/
+	void level9();
+	bool checkLevel9 = false;
+	bool reverseLevel9 = false;
+
+	// OSTACOLO 9//
+	int xOst9 = 15;
+	int yOst9 = 15;
+	int zOst9 = 15;
+	ofxBulletBox ostacolo9;
+
 
 
 	void settingLevel();
 	/*GUI LEVELS*/
 	
-	float overflow=0;
+	float overflow_target=0;
+	float overflow = 0;
 	ofxIntSlider levels;
 	
 
