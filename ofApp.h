@@ -41,7 +41,7 @@ public:
 	float angle;
 	ofLight light;
 	bool bOrbit, bRoll;
-	float angleH, roll, distance;
+	float angleH, roll;
 
 	//Punteggio
 	int num_partita = 0;
@@ -51,9 +51,14 @@ public:
 	int forza = 250;
 	int frizione = -25;
 
+
+	bool colpito = false;
+
 	/****** ARENA ******/
 	ofxBulletWorldRigid			world;
 	
+
+
 
 
 
@@ -150,7 +155,7 @@ public:
 	/***** TIME *****/
 	double start_timer;
 	double end_timer;
-	double time_game = 10000; //300.000 are 5 minutes -- 125.000 are 2 minutes
+	double time_game = 300000; //300.000 are 5 minutes -- 125.000 are 2 minutes
 	int timer = 0;
 
 	bool started = false;
@@ -276,6 +281,34 @@ public:
 	//SCOREBOARD
 	ofImage scoreboard;
 
+
+	/***** CAR *****/
+
+	ofBoxPrimitive wheel1, wheel2, wheel3, wheel4, point_left, point_right, point_center, origin;
+	float distance = 5;
+
+	bool rotation_left = false;
+	bool rotation_right = false;
+	bool marcia = false;
+	bool retromarcia = false;
+
+	void resetLeftRightPoint();
+	void createCar();
+	void drawCar();
+
+	bool muovi_avanti = false;
+	void moveW();
+	void moveD(int deg);
+	void moveA(int deg);
+	void moveS();
+
+	float speed = 0.05;
+	float max_speed = 1.25;
+	int rallentamento_marcia = true; //rallentamento in avanti
+
+	ofVec3f eur_deg;
+	float theta = 0;
+	float wheel_deg = speed + 1;
 
 };
 

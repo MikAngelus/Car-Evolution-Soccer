@@ -1,6 +1,8 @@
 #include "ofApp.h"
 #include "level.h"
 #include "gui.h"
+#include "car.h"
+
 
 //--------------------------------------------------------------
 void ofApp::setup() {
@@ -60,9 +62,15 @@ void ofApp::setup() {
 	//gui_ball.add(resetBallButton.setup("Reset Ball"));
 
 
+
 	drawGuiGame();
 	drawGuiBall();
 	drawInitialGui();
+
+
+	//SETUP CAR
+	createCar();
+	eur_deg = wheel1.getOrientationEulerDeg();
 
 	world.setup();
 	world.setGravity(ofVec3f(0, -9.8, 0)); // Di default la gravità 0,9.8,0 verso l'asse Y+
@@ -369,16 +377,56 @@ void ofApp::draw() {
 
 			//effectGol();
 
+
+			cout << "Centro Macchina:" << point_center.getPosition() << "Palla:" << sphere->getPosition() << endl;
+
+			/*Movimento CAR*/
+			drawCar();
+
+			//cout << speed << endl;
+
+			if (point_center.getPosition().x > sphere->getPosition().x - distance && point_center.getPosition().x < sphere->getPosition().x + distance) {
+
+				if (point_center.getPosition().y + distance > sphere->getPosition().y - ball_radius && point_center.getPosition().y + distance < sphere->getPosition().y + ball_radius) {
+
+					if (point_center.getPosition().z > sphere->getPosition().z - distance && point_center.getPosition().z < sphere->getPosition().z + distance) {
+
+						
+						cout << "palla colpita" << endl;
+
+						if (marcia) {
+
+							sphere->applyCentralForce(ofVec3f(-(speed * sin(theta / 360 * 2 * PI) / 200), 0, -(speed * cos(theta / 360 * 2 * PI) / 200)));
+						}
+
+						else if (retromarcia) {
+
+							sphere->applyCentralForce(ofVec3f((speed * sin(theta / 360 * 2 * PI) / 200), 0, (speed * cos(theta / 360 * 2 * PI) / 200)));
+
+						}
+					}
+				}
+			}
+				
+
+				
+	
+			/*car->remove();
+			car = new ofxBulletBox();
+			car->create(world.world, ofVec3f(point_center.getPosition()), 1, 7, 4, 10);
+			car->add();
+			car->draw();*/
+
 			box.draw();
 			//box.drawAxes(1000);
 
 			//Il modello 3D segue l'oggetto CAR (BULLET BOX)
 			ofFill();
-			textureCar.bind();
-			octaneModel.drawFaces();
+			//textureCar.bind();
+			//octaneModel.drawFaces();
 			//octaneModel.setRotation(0, car->getRotationAngle(), car->getRotation().x, car->getRotation().y, car->getRotation().z); NON FUNZIONA LA ROTAZIONE
-			octaneModel.setPosition(car->getPosition().x, car->getPosition().y - 1, car->getPosition().z + 1);
-			textureCar.unbind();
+			//octaneModel.setPosition(car->getPosition().x, car->getPosition().y - 1, car->getPosition().z + 1);
+			//textureCar.unbind();
 			cam.end();
 
 			glDisable(GL_DEPTH_TEST);
@@ -457,55 +505,44 @@ void ofApp::draw() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
+	if (key == 'w') {
+
+		marcia = true;
 
 
-	if (key == '6' or key == 'd') { //SPOSTAMENTO A DESTRA
-		car->applyCentralForce(ofVec3f(forza, frizione, 0));
 	}
 
 
-	if (key == '9') { //SPOSTAMENTO A DESTRA-AVANTI
-		car->applyCentralForce(ofVec3f(forza, frizione, -forza));
-	}
+	if (key == 's') {
 
-	if (key == '8' or key == 'w') { //SPOSTAMENTO AVANTI
-		car->applyCentralForce(ofVec3f(0, frizione, -forza));
-		
-	}
-
-	if (key == '7') { //SPOSTAMENTO A SINISTRA-AVANTI
-		car->applyCentralForce(ofVec3f(-forza, frizione, -forza));
-	}
-
-	if (key == '4' or key == 'a') { //SPOSTAMENTO A SINISTRA
-		car->applyCentralForce(ofVec3f(-forza, frizione, 0));
-	}
-
-
-	if (key == '1') { //SPOSTAMENTO INDIETRO-SINISTRA
-		car->applyCentralForce(ofVec3f(-forza, frizione, forza));
-	}
-
-	if (key == '2' or key == 's') { //SPOSTAMENTO INDIETRO
-		car->applyCentralForce(ofVec3f(0, frizione, forza));
-	}
-
-	if (key == '3') { //SPOSTAMENTO INDIETRO - DESTRA
-		car->applyCentralForce(ofVec3f(forza, frizione, forza));
-	}
-
-	if (key == OF_KEY_TAB) { //SALTO
-		car->applyForce(ofVec3f(0, -20, 0), ofVec3f(0, -20, 0));
-	}
-
-	if (key == 'r') {
-		resetBall();
+		retromarcia = true;
 
 	}
 
-	if (key == 't') {
+	if (key == 'a') {
 
-		resetCar();
+
+		if (!rotation_left) {
+
+			wheel1.rotateDeg(45, ofVec3f(0, 1, 0));
+			wheel2.rotateDeg(45, ofVec3f(0, 1, 0));
+
+			rotation_left = true;
+
+		}
+
+	}
+
+	if (key == 'd') {
+
+
+		if (!rotation_right) {
+
+			wheel1.rotateDeg(-45, ofVec3f(0, 1, 0));
+			wheel2.rotateDeg(-45, ofVec3f(0, 1, 0));
+			rotation_right = true;
+		}
+
 	}
 
 }
@@ -513,11 +550,49 @@ void ofApp::keyPressed(int key) {
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
 
-	if (key == '8' or key == 'w') { //SPOSTAMENTO AVANTI
-		soundAcc.play();
-		soundAcc.setVolume(1);
+	if (key == 'a') {
+
+		if (rotation_left) {
+
+			wheel1.rotateDeg(-45, ofVec3f(0, 1, 0));
+			wheel2.rotateDeg(-45, ofVec3f(0, 1, 0));
+
+			rotation_left = false;
+
+		}
 
 	}
+
+	if (key == 'd') {
+
+
+		if (rotation_right) {
+
+			wheel1.rotateDeg(45, ofVec3f(0, 1, 0));
+			wheel2.rotateDeg(45, ofVec3f(0, 1, 0));
+			rotation_right = false;
+
+		}
+
+	}
+
+
+	if (key == 'w') {
+
+
+		marcia = false;
+		rallentamento_marcia = true;
+
+	}
+
+	if (key == 's') {
+
+		retromarcia = false;
+		rallentamento_marcia = false;
+
+	}
+
+
 }
 
 //--------------------------------------------------------------
