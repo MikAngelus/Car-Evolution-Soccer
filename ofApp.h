@@ -301,9 +301,11 @@ public:
 	void moveD(int deg);
 	void moveA(int deg);
 	void moveS();
+	bool controlArena();
+	 
 
 	float speed = 0.05;
-	float max_speed = 1.25;
+	float max_speed = 1;
 	int rallentamento_marcia = true; //rallentamento in avanti
 
 	ofVec3f eur_deg;

@@ -378,11 +378,12 @@ void ofApp::draw() {
 			//effectGol();
 
 
-			cout << "Centro Macchina:" << point_center.getPosition() << "Palla:" << sphere->getPosition() << endl;
+			//cout << "Centro Macchina:" << point_center.getPosition() << "Palla:" << sphere->getPosition() << endl;
 
 			/*Movimento CAR*/
 			drawCar();
 
+			//cout << wheel_deg << endl;
 			//cout << speed << endl;
 
 			if (point_center.getPosition().x > sphere->getPosition().x - distance && point_center.getPosition().x < sphere->getPosition().x + distance) {
@@ -396,12 +397,12 @@ void ofApp::draw() {
 
 						if (marcia) {
 
-							sphere->applyCentralForce(ofVec3f(-(speed * sin(theta / 360 * 2 * PI) / 200), 0, -(speed * cos(theta / 360 * 2 * PI) / 200)));
+							sphere->applyCentralForce(ofVec3f(-(speed * sin(theta / 360 * 2 * PI) / 300), 0, -(speed * cos(theta / 360 * 2 * PI) / 300)));
 						}
 
 						else if (retromarcia) {
 
-							sphere->applyCentralForce(ofVec3f((speed * sin(theta / 360 * 2 * PI) / 200), 0, (speed * cos(theta / 360 * 2 * PI) / 200)));
+							sphere->applyCentralForce(ofVec3f((speed * sin(theta / 360 * 2 * PI) / 300), 0, (speed * cos(theta / 360 * 2 * PI) / 300)));
 
 						}
 					}
@@ -507,16 +508,82 @@ void ofApp::draw() {
 void ofApp::keyPressed(int key) {
 	if (key == 'w') {
 
-		marcia = true;
+		cout << wheel1.getPosition().x << endl;
 
+		if (controlArena()) {
+
+			if (speed <= 0) {
+				marcia = true;
+			}
+			else if (!marcia) {
+
+				speed = speed / 2.5;
+			}
+		}
+
+		else if (!controlArena()) {
+
+			if (point_center.getPosition().x - distance + max_speed  > 0 || point_center.getPosition().x + distance - max_speed > left.getPosition().x ||
+				point_center.getPosition().z - distance + max_speed > 0 || point_center.getPosition().z + distance - max_speed > front.getPosition().z ) {
+				cout << "macchina piantata" << endl;
+
+				if (speed <= 0) {
+					retromarcia = true;
+				}
+				else if (!retromarcia) {
+
+					speed = speed / 2.5;
+				}
+
+				speed = speed + 0.005;
+				wheel_deg = wheel_deg + 0.01;
+				cout << speed << endl;
+				moveW();
+			}
+
+
+
+
+
+		}
 
 	}
 
 
 	if (key == 's') {
 
-		retromarcia = true;
+		if (controlArena()) {
 
+			if (speed <= 0) {
+				retromarcia = true;
+			}
+			else if (!retromarcia) {
+
+				speed = speed / 2.5;
+			}
+		}
+
+		else if (!controlArena()) {
+		
+
+			if (point_center.getPosition().x - distance + max_speed > 0 || point_center.getPosition().x + distance - max_speed > left.getPosition().x ||
+				point_center.getPosition().z - distance + max_speed > 0 || point_center.getPosition().z + distance - max_speed > front.getPosition().z) {
+
+				if (speed <= 0) {
+					retromarcia = true;
+				}
+				else if (!retromarcia) {
+
+					speed = speed / 2.5;
+				}
+
+				speed = speed + 0.005;
+				wheel_deg = wheel_deg + 0.01;
+				cout << speed << endl;
+				moveS();
+			}
+
+		}
 	}
 
 	if (key == 'a') {
@@ -579,16 +646,21 @@ void ofApp::keyReleased(int key) {
 
 	if (key == 'w') {
 
-
-		marcia = false;
-		rallentamento_marcia = true;
+		if (marcia) {
+			marcia = false;
+			rallentamento_marcia = true;
+		}
 
 	}
 
 	if (key == 's') {
 
-		retromarcia = false;
-		rallentamento_marcia = false;
+		
+		if (retromarcia) {
+			retromarcia = false;
+			rallentamento_marcia = false;
+		}
+		
 
 	}
 
