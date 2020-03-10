@@ -116,9 +116,10 @@ public:
 	/****** GUI ******/
 	ofxPanel gui_game;
 	ofxPanel gui_ball;
-	ofxPanel gui_init;
+	ofxPanel gui_first;
 	ofxPanel gui_stats;
 	void drawInitialGui();
+	void drawFirstGui();
 	void drawGuiGame();
 	void drawGuiBall();
 	ofxFloatSlider ball_radius;
@@ -130,6 +131,10 @@ public:
 	ofxButton resetCarButton;
 	ofxButton playGame;
 	ofxButton restartGame;
+	ofxButton readLead;
+	ofxButton option;
+	ofxLabel Nickname;
+	ofxButton rules;
 	ofxLabel labelGame;
 	ofxLabel labelPoint;
 	ofxLabel labelSeconds;
@@ -150,7 +155,7 @@ public:
 	void resetCar();
 	void play();
 	void restartPlay();
-	bool SplashScreen = false; //mostra menu iniziale
+	bool initialMenu = true; //mostra menu iniziale
 
 	/***** TIME *****/
 	double start_timer;
@@ -275,7 +280,7 @@ public:
 	/**** TEXTURE ***/
 	ofTexture textureBall;
 	ofTexture textureGround;
-	ofTexture textureCar;
+	ofTexture textureWheels;
 	ofTexture textureWall;
 
 	//SCOREBOARD
@@ -312,5 +317,12 @@ public:
 	float theta = 0;
 	float wheel_deg = speed + 1;
 
+
+
+
+	//regolamento
+	vector < string > linesOfTheFile;
+	void readRules();
+	bool activeRules = false;
 };
 

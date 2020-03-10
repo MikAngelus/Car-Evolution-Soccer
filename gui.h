@@ -1,5 +1,5 @@
 
-void ofApp::drawInitialGui() {
+void ofApp::drawFirstGui() {
 
 	gui_game.setup("GAME", "GAME", 25, 25);
 	gui_game.add(restartGame.setup("Restart Game"));
@@ -7,13 +7,20 @@ void ofApp::drawInitialGui() {
 
 }
 
+void ofApp::drawInitialGui() {
 
+	gui_first.setup("GAME", "GAME", ofGetWidth() / 2, ofGetHeight() / 2);
+	gui_first.add(playGame.setup("Start Game"));
+	gui_first.add(readLead.setup("Leadboard"));
+	gui_first.add(option.setup("Options"));
+	gui_first.add(rules.setup("Game rules"));
 
+}
 
 
 void ofApp::drawGuiGame() {
 
-	gui_stats.setup("STATISTICS", "STATISTICS", 25, gui_init.getHeight() + 50);
+	gui_stats.setup("STATISTICS", "STATISTICS", 25, gui_first.getHeight() + 50);
 	//gui_game.add(labelGame.setup("Game Statistics", ""));
 	gui_stats.add(labelPoint.setup("Score", ofToString(score)));
 	gui_stats.add(labelNumMatch.setup("Match nr", ofToString(num_partita)));

@@ -2,7 +2,8 @@
 #include "level.h"
 #include "gui.h"
 #include "car.h"
-
+#include <fstream>  
+#include <string>  
 
 //--------------------------------------------------------------
 void ofApp::setup() {
@@ -36,8 +37,8 @@ void ofApp::setup() {
 	ofDisableArbTex();
 	ofLoadImage(textureBall, "texture_ball.png");
 	ofLoadImage(textureGround, "field.jpg");
-	ofLoadImage(textureCar, "car_texture.jpg");
-	//ofLoadImage(textureWall, "enclosure.jpg");
+	ofLoadImage(textureWheels, "wheels.png");
+	ofLoadImage(textureWall, "enclosure.jpg");
 	//textureGround.bind(); 
 	//textureGround.unbind();
 
@@ -48,24 +49,23 @@ void ofApp::setup() {
 	playGame.addListener(this, &ofApp::play);
 	restartGame.addListener(this, &ofApp::restartPlay);
 	levelButton.addListener(this, &ofApp::settingLevel);
-
-	gui_init.setup("GAME", "GAME", ofGetWidth()/2, ofGetHeight()/2);
-	gui_init.add(playGame.setup("Start Game"));
+	rules.addListener(this, &ofApp::readRules);
+	
 
 	gui_music.setup("MUSIC", "MUSIC", ofGetWidth() - 125, 25);
 	gui_music.add(volume.setup("Volume", 0.0,0.0,1.0));
 
 	//gui_ball.add(ball_radius.setup("Raggio Pallone", 4, 0, 30));
 	gui_level.setup("TARGET", "TARGET", ofGetWidth() / 2, 150);
-	gui_level.add(levels.setup("Level", 0, 0, 10));
+	gui_level.add(levels.setup("Level", 1, 1, 10));
 	gui_level.add(levelButton.setup("Apply"));
 	//gui_ball.add(resetBallButton.setup("Reset Ball"));
 
 
-
+	drawInitialGui();
 	drawGuiGame();
 	drawGuiBall();
-	drawInitialGui();
+	drawFirstGui();
 
 
 	//SETUP CAR
@@ -199,7 +199,16 @@ void ofApp::effectGol() {
 
 }
 
+void ofApp::readRules() {
 
+	activeRules = true;
+	linesOfTheFile.clear();
+	ofBuffer buffer = ofBufferFromFile("rules.txt");
+	for (auto line : buffer.getLines()) {
+		linesOfTheFile.push_back(line);
+	}
+
+}
 
 //--------------------------------------------------------------
 void ofApp::draw() {
@@ -211,15 +220,28 @@ void ofApp::draw() {
 	glDisable(GL_CULL_FACE);*/
 	
 
-	if (SplashScreen == true) {
-
+	if (initialMenu == true) {
+		ofSetColor(255, 255, 255);
 		background.draw(0, 0);
-		gui_init.draw();
+		gui_first.draw();
 
 		//MUSIC
 		gui_music.draw();
 		initSound.setVolume(volume);
+		if (activeRules) {
 
+			int padding = 10;
+			ofSetColor(255, 255, 255);
+			ofDrawRectRounded(ofGetWidth() / 2, ofGetHeight() / 2, 500, 250, 10);
+			
+			ofSetColor(255, 0, 0);
+			for (int j = 0; j < linesOfTheFile.size(); j++) {
+
+				ofDrawBitmapString(linesOfTheFile[j], ofGetWidth() / 2 + padding, ofGetHeight() / 2 + padding*2 +j*20);
+
+			}
+
+		}
 	}
 
 	else {
@@ -267,9 +289,9 @@ void ofApp::draw() {
 			//if (scelta == 1 ) {
 			//	level1();
 		
-				textureWall.unbind();
-				target.draw();
-				textureWall.bind();
+			textureWall.unbind();
+			target.draw();
+			textureWall.bind();
 			//}
 			//else
 
@@ -280,14 +302,15 @@ void ofApp::draw() {
 			//	textureWall.bind();
 			//}
 			
-			
+			//ofSetColor(255, 0, 0);
 			ofFill();
+
 			/*GROUND*/
 			textureGround.bind(); 
 			ground.draw();
 			textureGround.unbind();
 			
-			ofSetColor(255, 0, 0);
+			
 			if (levels == 6) {
 
 				ostacolo6.draw();
@@ -315,7 +338,7 @@ void ofApp::draw() {
 			textureWall.bind();
 			back1.draw();
 			textureWall.unbind();
-			//fgegege//
+		
 
 			textureWall.bind();
 			back2.draw();
@@ -325,11 +348,15 @@ void ofApp::draw() {
 			textureWall.bind();
 			left.draw();
 			textureWall.unbind();
-			//textureWall.bind();
+			textureWall.bind();
 			front.draw();
-			//textureWall.unbind();
+			textureWall.unbind();
 
 			ofFill();
+
+			
+
+			
 
 			if (sphere->checkCreate() == true && car->checkCreate() == true) {
 
@@ -354,6 +381,8 @@ void ofApp::draw() {
 						end_effect = start_effect + time_effect;
 						//effect = end_effect - ofGetSystemTimeMillis();
 						//effect = effect / 1000;
+						levels = levels + 1;
+						
 
 					}
 
@@ -551,6 +580,8 @@ void ofApp::keyPressed(int key) {
 
 
 	if (key == 's') {
+	
+
 
 		if (controlArena()) {
 
@@ -588,30 +619,37 @@ void ofApp::keyPressed(int key) {
 
 	if (key == 'a') {
 
+		if (controlArena()) {
+			if (!rotation_left) {
 
-		if (!rotation_left) {
+				wheel1.rotateDeg(45, ofVec3f(0, 1, 0));
+				wheel2.rotateDeg(45, ofVec3f(0, 1, 0));
 
-			wheel1.rotateDeg(45, ofVec3f(0, 1, 0));
-			wheel2.rotateDeg(45, ofVec3f(0, 1, 0));
+				rotation_left = true;
 
-			rotation_left = true;
-
+			}
 		}
 
 	}
 
 	if (key == 'd') {
 
+		if (controlArena()) {
+			if (!rotation_right) {
 
-		if (!rotation_right) {
-
-			wheel1.rotateDeg(-45, ofVec3f(0, 1, 0));
-			wheel2.rotateDeg(-45, ofVec3f(0, 1, 0));
-			rotation_right = true;
+				wheel1.rotateDeg(-45, ofVec3f(0, 1, 0));
+				wheel2.rotateDeg(-45, ofVec3f(0, 1, 0));
+				rotation_right = true;
+			}
 		}
-
 	}
 
+	if (key == 'e') {
+
+
+		activeRules=false;
+
+	}
 }
 
 //--------------------------------------------------------------
@@ -646,6 +684,7 @@ void ofApp::keyReleased(int key) {
 
 	if (key == 'w') {
 
+		sphere->applyCentralForce(ofVec3f(0.0000001, 0, 0.0000001));
 		if (marcia) {
 			marcia = false;
 			rallentamento_marcia = true;
@@ -655,7 +694,7 @@ void ofApp::keyReleased(int key) {
 
 	if (key == 's') {
 
-		
+		sphere->applyCentralForce(ofVec3f(0.0000001, 0 , 0.0000001));
 		if (retromarcia) {
 			retromarcia = false;
 			rallentamento_marcia = false;

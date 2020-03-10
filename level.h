@@ -13,11 +13,14 @@ void ofApp::resetBall() {
 //--------------------------------------------------------------
 void ofApp::resetCar() {
 
-	car->remove();
+	/*car->remove();
 	car = new ofxBulletBox();
 	car->create(world.world, ofVec3f(80, 30, 80), 1, 5, 4, 9);
 	car->add();
-	car->setRestitution(0);
+	car->setRestitution(0);*/
+
+	createCar();
+
 
 }
 
@@ -43,7 +46,7 @@ void ofApp::resetTarget() {
 
 //--------------------------------------------------------------
 void ofApp::play() {
-	SplashScreen = false;
+	initialMenu = false;
 	resetBall();
 	resetCar();
 

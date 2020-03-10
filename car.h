@@ -221,15 +221,15 @@ void ofApp::drawCar() {
 bool ofApp::controlArena() {
 
 	//CONTROLLO ARENA X
-	if (point_center.getPosition().x - distance < xRight  || point_center.getPosition().x + distance > left.getPosition().x - xLeft ) {
-	
+	if (point_center.getPosition().x - distance < xRight/2  || point_center.getPosition().x + distance > left.getPosition().x - xLeft/2 ) {
+
 		//cout << "SEI FUORI ARENA" << endl;
 		return false;
 
 	}
 
 	//CONTROLLO Z
-	else if (point_center.getPosition().z - distance < zBack1 || point_center.getPosition().z + distance > front.getPosition().z - zFront) {
+	else if (point_center.getPosition().z - distance < zBack1/2 || point_center.getPosition().z + distance > front.getPosition().z - zFront/2) {
 
 		//cout << "SEI FUORI ARENA" << endl;
 		return false;
