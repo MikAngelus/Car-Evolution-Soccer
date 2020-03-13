@@ -2,6 +2,8 @@
 #include "level.h"
 #include "gui.h"
 #include "car.h"
+#include "arena.h"
+#include <iostream>  
 #include <fstream>  
 #include <string>  
 
@@ -9,6 +11,9 @@
 void ofApp::setup() {
 
 	ofSetFrameRate(60);
+
+
+
 
 	//Background
 	background.load("background.jpg");
@@ -50,91 +55,25 @@ void ofApp::setup() {
 	restartGame.addListener(this, &ofApp::restartPlay);
 	levelButton.addListener(this, &ofApp::settingLevel);
 	rules.addListener(this, &ofApp::readRules);
+	buttonHistory.addListener(this, &ofApp::readHistory);
 	
-
-	gui_music.setup("MUSIC", "MUSIC", ofGetWidth() - 125, 25);
-	gui_music.add(volume.setup("Volume", 0.0,0.0,1.0));
-
-	//gui_ball.add(ball_radius.setup("Raggio Pallone", 4, 0, 30));
-	gui_level.setup("TARGET", "TARGET", ofGetWidth() / 2, 150);
-	gui_level.add(levels.setup("Level", 1, 1, 10));
-	gui_level.add(levelButton.setup("Apply"));
-	//gui_ball.add(resetBallButton.setup("Reset Ball"));
 
 
 	drawInitialGui();
 	drawGuiGame();
-	drawGuiBall();
+	drawGuiSetting();
 	drawFirstGui();
+	
+
 
 
 	//SETUP CAR
 	createCar();
 	eur_deg = wheel1.getOrientationEulerDeg();
 
-	world.setup();
-	world.setGravity(ofVec3f(0, -9.8, 0)); // Di default la gravità 0,9.8,0 verso l'asse Y+
-	world.enableGrabbing();
-	world.enableDebugDraw();
-	world.setCamera(&cam);
 
-	
-	ground.create(world.world, ofVec3f(xGround / 2, yGround / 2, zGround / 2), 0, xGround, yGround, zGround);
-	ground.setProperties(.25, .95);
-	ground.add();
-
-
-	ceiling.create(world.world, ofVec3f(xGround / 2, yBack1, zGround / 2), 0, xGround, yGround, zGround);
-	ceiling.setProperties(.25, .95);
-	ceiling.add();
-
-	/*back.create(world.world, ofVec3f(0, yBack/2, -xGround/2), 0, xBack, yBack, zBack);
-	back.setProperties(.25, .95);
-	back.add();*/
-
-
-	back1.create(world.world, ofVec3f(xBack1 / 2, yBack1 / 2, 0), 0, xBack1, yBack1, zBack1);
-	back1.setProperties(.25, .95);
-	back1.add();
-
-
-	target.create(world.world, ofVec3f(xGround / 2, yBack1 / 2 + yTarget / 2, 0), 0, xTarget, yTarget, zTarget);
-	target.setProperties(.25, .95);
-	target.add();
-
-
-	back2.create(world.world, ofVec3f(xGround / 2 + xBack1, yBack1 / 2, 0), 0, xBack1, yBack1, zBack1);
-	back2.setProperties(.25, .95);
-	back2.add();
-
-
-	right.create(world.world, ofVec3f(0, yBack1 / 2, zGround / 2), 0, xRight, yRight, zRight);
-	right.setProperties(.25, .95);
-	right.add();
-
-	front.create(world.world, ofVec3f(xGround / 2, yBack1 / 2, zGround), 0, xFront, yFront, zFront);
-	front.setProperties(.25, .95);
-	front.add();
-
-	left.create(world.world, ofVec3f(xGround, yBack1 / 2, zGround / 2), 0, xLeft, yLeft, zLeft);
-	left.setProperties(.25, .95);
-	left.add();
-
-	//OSTACOLO livello 6
-	ostacolo6.create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
-	ostacolo6.setProperties(.25, .95);
-	ostacolo6.add();
-
-	//OSTACOLO livello 7
-	ostacolo7.create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
-	ostacolo7.setProperties(.25, .95);
-	ostacolo7.add();
-
-
-	//OSTACOLO LIVELLO 9
-	ostacolo9.create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
-	ostacolo9.setProperties(.25, .95);
-	ostacolo9.add();
+	//CREATE NEW ARENA
+	createArena();
 
 	//play();
 
@@ -178,6 +117,13 @@ void ofApp::setup() {
 	
 
 	ofDisableDepthTest();
+
+	//load font
+	title.loadFont("ea.ttf", 100);
+	subtitle.loadFont("ea.ttf", 75);
+	label.loadFont("ea.ttf", 15);
+	ofxGuiSetFont("ea.ttf", 12);
+
 }
 
 
@@ -186,6 +132,14 @@ void ofApp::update() {
 	world.update();
 
 }
+
+
+void ofApp::insertNick() {
+
+	nickname = ofSystemTextBoxDialog("Insert your Nickname", nickname);
+
+}
+
 
 
 void ofApp::effectGol() {
@@ -199,10 +153,22 @@ void ofApp::effectGol() {
 
 }
 
+void ofApp::readHistory() {
+
+	activeHistory = true;
+	linesOfTheFile.clear();
+
+	ofBuffer buffer = ofBufferFromFile("history.txt");
+	for (auto line : buffer.getLines()) {
+		linesOfTheFile.push_back(line);
+	}
+}
+
 void ofApp::readRules() {
 
 	activeRules = true;
 	linesOfTheFile.clear();
+
 	ofBuffer buffer = ofBufferFromFile("rules.txt");
 	for (auto line : buffer.getLines()) {
 		linesOfTheFile.push_back(line);
@@ -224,20 +190,32 @@ void ofApp::draw() {
 		ofSetColor(255, 255, 255);
 		background.draw(0, 0);
 		gui_first.draw();
+		
+		title.drawString("CAR SOCCER EVOLUTION", 250, 120);
 
-		//MUSIC
-		gui_music.draw();
-		initSound.setVolume(volume);
-		if (activeRules) {
+		
+		//fontSize++;
+		//font.drawString("CIAONE", ofGetWidth() / 2, ofGetHeight() / 2);
 
-			int padding = 10;
+
+		if (nickname.empty()) {
+
+			insertNick();
+		}
+		
+		subtitle.drawString("Welcome " + nickname, ofGetWidth() / 2 - ofGetWidth() / 4 +75, 300);
+
+	
+		if (activeRules || activeHistory) {
+
+			int padding = 18;
 			ofSetColor(255, 255, 255);
-			ofDrawRectRounded(ofGetWidth() / 2, ofGetHeight() / 2, 500, 250, 10);
+			ofDrawRectRounded(ofGetWidth() / 2 + 125, ofGetHeight() / 2 , 500, 250, 10);
 			
-			ofSetColor(255, 0, 0);
+			ofSetColor(0, 0, 0);
 			for (int j = 0; j < linesOfTheFile.size(); j++) {
 
-				ofDrawBitmapString(linesOfTheFile[j], ofGetWidth() / 2 + padding, ofGetHeight() / 2 + padding*2 +j*20);
+				label.drawString(linesOfTheFile[j], ofGetWidth() / 2 + 125 + padding, ofGetHeight() / 2 + padding*2 +j*20);
 
 			}
 
@@ -247,8 +225,21 @@ void ofApp::draw() {
 	else {
 
 		initSound.stop();
+		int readLevel = levels;
 
-		if (!started) {
+		if (completed) { // match concluso
+
+			ofSetColor(255, 255, 255);
+			background.draw(0, 0);
+			subtitle.drawString("Game over" + nickname +"\nLevel completed: " + ofToString(readLevel-1) +"\nTime: " + ofToString(timeCompleted) +" seconds", ofGetWidth() / 2 - ofGetWidth() / 4, ofGetHeight()/2 -75);
+			
+			label.drawString("Premi 'M' per accedere al menù principale", ofGetWidth() / 2, ofGetHeight() / 2 + 200);
+
+
+
+		}
+
+		else if (!started) {
 			
 
 			if (ofGetSystemTimeMillis() < end_countdown) {
@@ -274,13 +265,21 @@ void ofApp::draw() {
 			}
 
 
-
-
 		}
 		else {
 			ofEnableAlphaBlending();
 			ofSetColor(255, 255, 255);
-			scoreboard.draw(ofGetWidth()/2 -scoreboard.getWidth()/2 , 100);
+
+		
+
+			//scoreboard.draw(ofGetWidth()/2 -scoreboard.getWidth()/2 , 100);
+			
+
+			subtitle.drawString("Level " +  ofToString(readLevel), ofGetWidth() / 2-150, 100);
+
+			label.drawString("Second remaining " + ofToString(timer), ofGetWidth() / 2 - 75, 150);
+			
+
 			cam.begin();
 			ofSetColor(255, 255, 255);
 			
@@ -462,11 +461,21 @@ void ofApp::draw() {
 			glDisable(GL_DEPTH_TEST);
 			ofSetColor(0, 0, 255);
 
+
+			if (levels > 10) {
+
+				completed = true;
+				timer = end_timer - ofGetSystemTimeMillis();
+				timer = timer / 1000;
+				timeCompleted = (time_game/1000) - timer;
+				
+
+			}
+
 			//EFFECT WHEN SCORE
 			if (ofGetSystemTimeMillis() < end_effect) {
 
-				ofSetColor(0, 0, 0);
-				ofDrawBitmapString("GOOOOOL", ofGetWidth() / 2, ofGetHeight() / 2);
+				subtitle.drawString("GOOOOOL", ofGetWidth() / 2-150, ofGetHeight()/2);
 				//ofBackground(ofRandom(256), ofRandom(256), ofRandom(256));
 
 			}
@@ -480,9 +489,11 @@ void ofApp::draw() {
 
 				}
 
-				else if (ofGetSystemTimeMillis() > end_timer) { //PARTITA CONCLUSA 
+				else if (ofGetSystemTimeMillis() > end_timer ) { //PARTITA CONCLUSA 
 					
-					ofDrawBitmapString("PARTITA CONCLUSA", (ofGetWidth() / 2), 25);
+					completed = true;
+					timeCompleted = time_game/1000;
+					subtitle.drawString("Partita conclusa", ofGetWidth() / 2 - 150, ofGetHeight() / 2);
 					//whistle.play();
 					//whistle.setLoop(false);
 
@@ -501,12 +512,15 @@ void ofApp::draw() {
 
 
 			gui_game.draw();
-			gui_ball.draw();
+			
 			gui_stats.draw();
-			gui_level.draw();
+	
+
+			if (setting) {
+				gui_setting.draw();
+			}
 
 			//MUSIC
-			gui_music.draw();
 			generalSound.setVolume(volume);
 
 
@@ -648,6 +662,15 @@ void ofApp::keyPressed(int key) {
 
 
 		activeRules=false;
+		activeHistory = false;
+
+	}
+
+	if (key == 'm') {
+
+
+		initialMenu = true;
+		completed = false;
 
 	}
 }

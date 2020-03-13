@@ -4,7 +4,9 @@
 #include "ofxBullet.h"
 #include "ofxGui.h"
 #include "ofxAssimpModelLoader.h"
-
+#include <iostream>  
+#include <fstream>  
+#include <string>  
 
 class ofApp : public ofBaseApp {
 
@@ -35,7 +37,7 @@ public:
 	ofxBulletBox*				car;
 	//ofxBulletCustomShape		octane;
 
-
+	void createArena();
 
 	ofBoxPrimitive box;
 	float angle;
@@ -115,13 +117,13 @@ public:
 
 	/****** GUI ******/
 	ofxPanel gui_game;
-	ofxPanel gui_ball;
+	ofxPanel gui_setting;
 	ofxPanel gui_first;
 	ofxPanel gui_stats;
 	void drawInitialGui();
 	void drawFirstGui();
 	void drawGuiGame();
-	void drawGuiBall();
+	void drawGuiSetting();
 	ofxFloatSlider ball_radius;
 	ofxFloatSlider ball_restitution;
 	ofxFloatSlider car_width;
@@ -131,9 +133,8 @@ public:
 	ofxButton resetCarButton;
 	ofxButton playGame;
 	ofxButton restartGame;
-	ofxButton readLead;
-	ofxButton option;
-	ofxLabel Nickname;
+	ofxButton buttonHistory;
+	ofxToggle setting;
 	ofxButton rules;
 	ofxLabel labelGame;
 	ofxLabel labelPoint;
@@ -155,20 +156,24 @@ public:
 	void resetCar();
 	void play();
 	void restartPlay();
-	bool initialMenu = true; //mostra menu iniziale
+	bool initialMenu = false; //mostra menu iniziale
 
 	/***** TIME *****/
 	double start_timer;
 	double end_timer;
-	double time_game = 300000; //300.000 are 5 minutes -- 125.000 are 2 minutes
+	double time_game = 3000; //300.000 are 5 minutes -- 125.000 are 2 minutes
 	int timer = 0;
 
 	bool started = false;
 	double start_countdown;
 	double end_countdown;
-	double time_countdown = 5000; //300.000 are 5 minutes -- 125.000 are 2 minutes
+	double time_countdown = 5000; 
 	int countdown = 0;
 	int scelta = 0;
+
+	//PARTITA CONCLUSA
+	bool completed = false;
+	int timeCompleted = 0;
 
 	/*LEVELS*/
 	ofxPanel gui_level;
@@ -228,7 +233,7 @@ public:
 	
 	float overflow_target=0;
 	float overflow = 0;
-	ofxIntSlider levels;
+	ofxIntSlider levels=1;
 	
 
 	//3D OBJECT
@@ -322,7 +327,24 @@ public:
 
 	//regolamento
 	vector < string > linesOfTheFile;
+
 	void readRules();
 	bool activeRules = false;
+
+	//NickName
+	string nickname;
+	void insertNick();
+
+	//Leadboard
+	//vector < string > linesOfTheFile;
+	void readHistory();
+	bool activeHistory = false;
+	ofstream history;
+
+	
+	//FONT
+	ofTrueTypeFont title;
+	ofTrueTypeFont subtitle;
+	ofTrueTypeFont label;
 };
 

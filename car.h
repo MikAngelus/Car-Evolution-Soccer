@@ -1,20 +1,22 @@
 
 void ofApp::createCar() {
 
-	wheel1.setPosition(10, 0, 10); // pos iniziale
+	wheel1.setPosition(50, 0, 50); // pos iniziale
 	wheel1.set(1, 4, 4);
+	wheel1.rotateDeg(0, ofVec3f(0, 1, 0));
 
-	wheel2.setPosition(10 + distance, 0, 10); // pos iniziale
+	wheel2.setPosition(50 + distance, 0, 50); // pos iniziale
 	wheel2.set(1, 4, 4);
 
-	wheel3.setPosition(10, 0, 10 + distance * 2); // pos iniziale
+	wheel3.setPosition(50, 0, 50 + distance * 2); // pos iniziale
 	wheel3.set(1, 4, 4);
 
-	wheel4.setPosition(10 + distance, 0, 10 + distance * 2); // pos iniziale
+	wheel4.setPosition(50 + distance, 0, 50 + distance * 2); // pos iniziale
 	wheel4.set(1, 4, 4);
 
 	point_center.setPosition(wheel1.getPosition().x + distance / 2, wheel1.getPosition().y, wheel1.getPosition().z + distance); // pos iniziale
 	point_center.set(distance + distance / 4, 2, distance + distance / 2);
+
 
 	resetLeftRightPoint();
 

@@ -1,18 +1,19 @@
 
 void ofApp::drawFirstGui() {
+	
 
 	gui_game.setup("GAME", "GAME", 25, 25);
 	gui_game.add(restartGame.setup("Restart Game"));
 	gui_game.add(lockCamera.setup("Lock camera", true)); //MOMENTANEAMENTE
+	gui_game.add(setting.setup("Option", false));
 
 }
 
 void ofApp::drawInitialGui() {
-
-	gui_first.setup("GAME", "GAME", ofGetWidth() / 2, ofGetHeight() / 2);
+	gui_first.setDefaultHeight(25);
+	gui_first.setup("GAME", "GAME", ofGetWidth() / 2-75, ofGetHeight() / 2);
 	gui_first.add(playGame.setup("Start Game"));
-	gui_first.add(readLead.setup("Leadboard"));
-	gui_first.add(option.setup("Options"));
+	gui_first.add(buttonHistory.setup("History"));
 	gui_first.add(rules.setup("Game rules"));
 
 }
@@ -20,7 +21,7 @@ void ofApp::drawInitialGui() {
 
 void ofApp::drawGuiGame() {
 
-	gui_stats.setup("STATISTICS", "STATISTICS", 25, gui_first.getHeight() + 50);
+	gui_stats.setup("STATISTICS", "STATISTICS", ofGetWidth() - 250, 25 );
 	//gui_game.add(labelGame.setup("Game Statistics", ""));
 	gui_stats.add(labelPoint.setup("Score", ofToString(score)));
 	gui_stats.add(labelNumMatch.setup("Match nr", ofToString(num_partita)));
@@ -42,13 +43,14 @@ void ofApp::drawGuiGame() {
 
 }
 
-void ofApp::drawGuiBall() {
-
-	gui_ball.setup("BALLS", "BALLS", 25, ofGetHeight() / 2);
-	gui_ball.add(ball_radius.setup("Raggio Pallone", 4, 0, 10));
-	gui_ball.add(ball_restitution.setup("Forza Rimbalzo", 3, 1, 5));
-	gui_ball.add(resetBallButton.setup("Reset Ball"));
-	gui_ball.add(resetCarButton.setup("Reset Car"));
+void ofApp::drawGuiSetting() {
+	gui_setting.setup("SETTING", "SETTING", 25, (gui_game.getPosition().y + 150));
+	gui_setting.add(ball_radius.setup("Raggio Pallone", 4, 0, 10));
+	gui_setting.add(ball_restitution.setup("Forza Rimbalzo", 3, 1, 5));
+	gui_setting.add(resetBallButton.setup("Reset Ball"));
+	gui_setting.add(resetCarButton.setup("Reset Car"));
+	gui_setting.add(volume.setup("Volume", 0.0, 0.0, 1.0));
+	gui_setting.add(levels.setup("Level", 1, 1, 10));
 
 
 }
