@@ -49,6 +49,13 @@ void ofApp::createArena(){
 	left.setProperties(.25, .95);
 	left.add();
 
+
+}
+
+
+void ofApp::createObstacle() {
+
+
 	//OSTACOLO livello 6
 	ostacolo6.create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
 	ostacolo6.setProperties(.25, .95);
@@ -64,6 +71,7 @@ void ofApp::createArena(){
 	ostacolo9.create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
 	ostacolo9.setProperties(.25, .95);
 	ostacolo9.add();
+
 
 
 }

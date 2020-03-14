@@ -75,6 +75,9 @@ void ofApp::setup() {
 	//CREATE NEW ARENA
 	createArena();
 
+
+	//CREATE OBSTACLE
+	createObstacle();
 	//play();
 
 	sphere = new ofxBulletSphere();
@@ -189,8 +192,8 @@ void ofApp::draw() {
 	if (initialMenu == true) {
 		ofSetColor(255, 255, 255);
 		background.draw(0, 0);
+		//drawInitialGui();
 		gui_first.draw();
-		
 		title.drawString("CAR SOCCER EVOLUTION", 250, 120);
 
 		
@@ -220,33 +223,29 @@ void ofApp::draw() {
 			}
 
 		}
+
+		completed = false;
+		levels = 0;
 	}
 
 	else {
 
 		initSound.stop();
-		int readLevel = levels;
+		
 
-		if (completed) { // match concluso
-
-			ofSetColor(255, 255, 255);
-			background.draw(0, 0);
-			subtitle.drawString("Game over" + nickname +"\nLevel completed: " + ofToString(readLevel-1) +"\nTime: " + ofToString(timeCompleted) +" seconds", ofGetWidth() / 2 - ofGetWidth() / 4, ofGetHeight()/2 -75);
-			
-			label.drawString("Premi 'M' per accedere al menù principale", ofGetWidth() / 2, ofGetHeight() / 2 + 200);
-
-
-
-		}
-
-		else if (!started) {
+		
+		if (!started) {
 			
 
 			if (ofGetSystemTimeMillis() < end_countdown) {
+
+				ofSetColor(255, 255, 255);
+				background.draw(0, 0);
+
 				countdown = end_countdown - ofGetSystemTimeMillis();
 				countdown = countdown / 1000;
-
-				ofDrawBitmapString(countdown+1, ofGetWidth()/2, ofGetHeight()/2);
+				
+				title.drawString(ofToString(countdown+1), ofGetWidth()/2, ofGetHeight()/2);
 			
 				
 			}
@@ -260,7 +259,6 @@ void ofApp::draw() {
 				//TIMER
 				start_timer = ofGetSystemTimeMillis();
 				end_timer = start_timer + time_game;
-
 				started = !started;
 			}
 
@@ -270,20 +268,19 @@ void ofApp::draw() {
 			ofEnableAlphaBlending();
 			ofSetColor(255, 255, 255);
 
-		
+
 
 			//scoreboard.draw(ofGetWidth()/2 -scoreboard.getWidth()/2 , 100);
-			
 
-			subtitle.drawString("Level " +  ofToString(readLevel), ofGetWidth() / 2-150, 100);
-
-			label.drawString("Second remaining " + ofToString(timer), ofGetWidth() / 2 - 75, 150);
-			
+			if (!completed) {
+			subtitle.drawString("Level " + ofToString(readLevel), ofGetWidth() / 2 - 150, 100);
+			label.drawString("Second remaining " + ofToString(timer), ofGetWidth() / 2 - 75, 150);	
+			}
 
 			cam.begin();
 			ofSetColor(255, 255, 255);
 			
-			settingLevel();
+			
 			
 			//if (scelta == 1 ) {
 			//	level1();
@@ -309,9 +306,11 @@ void ofApp::draw() {
 			ground.draw();
 			textureGround.unbind();
 			
+	
+			settingLevel();
 			
 			if (levels == 6) {
-
+				
 				ostacolo6.draw();
 			}
 			
@@ -327,9 +326,15 @@ void ofApp::draw() {
 			}
 
 			if (levels == 9) {
-
+		
 				ostacolo9.draw();
 			}
+
+			if (levels == 10) {
+		
+				ostacolo9.draw();
+			}
+
 			
 
 			ofNoFill();
@@ -353,9 +358,7 @@ void ofApp::draw() {
 
 			ofFill();
 
-			
-
-			
+		
 
 			if (sphere->checkCreate() == true && car->checkCreate() == true) {
 
@@ -380,8 +383,12 @@ void ofApp::draw() {
 						end_effect = start_effect + time_effect;
 						//effect = end_effect - ofGetSystemTimeMillis();
 						//effect = effect / 1000;
-						levels = levels + 1;
+
+						if (levels < 11) {
+							levels = levels + 1;
+						}
 						
+						overflow = 0; //resettare il movimento degli ostacoli
 
 					}
 
@@ -462,21 +469,23 @@ void ofApp::draw() {
 			ofSetColor(0, 0, 255);
 
 
-			if (levels > 10) {
+			if (levels > 10 && !completed) {
 
 				completed = true;
 				timer = end_timer - ofGetSystemTimeMillis();
 				timer = timer / 1000;
 				timeCompleted = (time_game/1000) - timer;
-				
+				readLevel = levels;
 
 			}
 
 			//EFFECT WHEN SCORE
 			if (ofGetSystemTimeMillis() < end_effect) {
 
-				subtitle.drawString("GOOOOOL", ofGetWidth() / 2-150, ofGetHeight()/2);
-				//ofBackground(ofRandom(256), ofRandom(256), ofRandom(256));
+				if (levels < 10) {
+					subtitle.drawString("GOOOOOL", ofGetWidth() / 2 - 150, ofGetHeight() / 2);
+					//ofBackground(ofRandom(256), ofRandom(256), ofRandom(256));
+				}
 
 			}
 
@@ -485,26 +494,49 @@ void ofApp::draw() {
 				if (ofGetSystemTimeMillis() < end_timer) { //PARTITA IN CORSO
 
 					timer = end_timer - ofGetSystemTimeMillis();
-					timer = timer / 1000;				
+					timer = timer / 1000;	
+					readLevel = levels;
 
 				}
 
-				else if (ofGetSystemTimeMillis() > end_timer ) { //PARTITA CONCLUSA 
-					
+				else if (ofGetSystemTimeMillis() > end_timer) { //PARTITA CONCLUSA 
+
+
 					completed = true;
-					timeCompleted = time_game/1000;
-					subtitle.drawString("Partita conclusa", ofGetWidth() / 2 - 150, ofGetHeight() / 2);
-					//whistle.play();
+					timeCompleted = time_game / 1000;
+					
+					//whistle.play()
 					//whistle.setLoop(false);
-
 				}
+
+
+				if (completed) { // match concluso
+
+					//background.draw(0, 0);
+				
+					if (levels > 10) {
+
+						subtitle.drawString("YOU WIN!\nLevel completed: " + ofToString(readLevel - 1) + "\nTime: " + ofToString(timeCompleted) + " seconds", ofGetWidth() / 2 - ofGetWidth() / 4, ofGetHeight() / 2 - 75);
+
+					}
+					else {
+						subtitle.drawString("Game over!\nLevel completed: " + ofToString(readLevel - 1) + "\nTime: " + ofToString(timeCompleted) + " seconds", ofGetWidth() / 2 - ofGetWidth() / 4, ofGetHeight() / 2 - 75);
+					}
+					//completed = false;
+					cout << "concluso" << endl;
+					//drawInitialGui();
+				}
+
+
 			}
 
+			
 			else {
 				//ofDrawBitmapString("Premi 'Start Game' per iniziare a giocare!", (ofGetWidth() / 2), 25);
 
 			}
 
+			
 
 
 			/***** RENDER GUI *****/
@@ -665,14 +697,6 @@ void ofApp::keyPressed(int key) {
 		activeHistory = false;
 
 	}
-
-	if (key == 'm') {
-
-
-		initialMenu = true;
-		completed = false;
-
-	}
 }
 
 //--------------------------------------------------------------
@@ -763,6 +787,7 @@ void ofApp::mouseExited(int x, int y) {
 void ofApp::windowResized(int w, int h) {
 
 }
+
 
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg) {

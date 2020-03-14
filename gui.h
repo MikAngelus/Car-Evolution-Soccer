@@ -12,7 +12,16 @@ void ofApp::drawFirstGui() {
 void ofApp::drawInitialGui() {
 	gui_first.setDefaultHeight(25);
 	gui_first.setup("GAME", "GAME", ofGetWidth() / 2-75, ofGetHeight() / 2);
-	gui_first.add(playGame.setup("Start Game"));
+	
+	if (num_partita == 0) {
+		gui_first.add(playGame.setup("Start Game"));
+	}
+
+	else if (num_partita > 0) {
+
+		gui_first.add(restartGame.setup("Restart Game"));
+		
+	}
 	gui_first.add(buttonHistory.setup("History"));
 	gui_first.add(rules.setup("Game rules"));
 

@@ -161,7 +161,7 @@ public:
 	/***** TIME *****/
 	double start_timer;
 	double end_timer;
-	double time_game = 3000; //300.000 are 5 minutes -- 125.000 are 2 minutes
+	double time_game = 300000; //300.000 are 5 minutes -- 125.000 are 2 minutes
 	int timer = 0;
 
 	bool started = false;
@@ -179,12 +179,18 @@ public:
 	ofxPanel gui_level;
 	ofxButton levelButton;
 	//int selectLevel = 0;
-
+	void createObstacle();
 
 	/*LEVEL 4*/
 	void level4();
 	bool checkLevel4 = false;
 	bool reverseLevel4 = false;
+
+
+	/*LEVEL 5*/
+	void level5();
+	bool checkLevel5 = false;
+	bool reverseLevel5 = false;
 
 	/*LEVEL 6*/
 	void level6();
@@ -220,6 +226,13 @@ public:
 	bool checkLevel9 = false;
 	bool reverseLevel9 = false;
 
+
+	/*LEVEL 10*/
+	void level10();
+	bool checkLevel10 = false;
+	bool reverseLevel10 = false;
+
+
 	// OSTACOLO 9//
 	int xOst9 = 15;
 	int yOst9 = 15;
@@ -227,7 +240,7 @@ public:
 	ofxBulletBox ostacolo9;
 
 
-
+	int readLevel;
 	void settingLevel();
 	/*GUI LEVELS*/
 	
