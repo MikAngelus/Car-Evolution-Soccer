@@ -1,25 +1,28 @@
 
 void ofApp::createCar() {
 
-	wheel1.setPosition(50, 0, 50); // pos iniziale
+	wheel1.setPosition(50, yGround, 50); // pos iniziale
 	wheel1.set(1, 4, 4);
-	wheel1.rotateDeg(0, ofVec3f(0, 1, 0));
+	wheel1.setOrientation(ofVec3f(0, 0, 0));
 
-	wheel2.setPosition(50 + distance, 0, 50); // pos iniziale
+
+	wheel2.setPosition(50 + distance, yGround, 50); // pos iniziale
 	wheel2.set(1, 4, 4);
+	wheel2.setOrientation(ofVec3f(0, 0, 0));
 
-	wheel3.setPosition(50, 0, 50 + distance * 2); // pos iniziale
+	wheel3.setPosition(50, yGround, 50 + distance * 2); // pos iniziale
 	wheel3.set(1, 4, 4);
+	wheel3.setOrientation(ofVec3f(0, 0, 0));
 
-	wheel4.setPosition(50 + distance, 0, 50 + distance * 2); // pos iniziale
+	wheel4.setPosition(50 + distance, yGround, 50 + distance * 2); // pos iniziale
 	wheel4.set(1, 4, 4);
+	wheel4.setOrientation(ofVec3f(0,0,0));
 
 	point_center.setPosition(wheel1.getPosition().x + distance / 2, wheel1.getPosition().y, wheel1.getPosition().z + distance); // pos iniziale
-	point_center.set(distance + distance / 4, 2, distance + distance / 2);
-
+	point_center.set(distance + distance / 4, 2, distance + distance / 2); //carrozzeria
+	point_center.setOrientation(ofVec3f(0,0,0));
 
 	resetLeftRightPoint();
-
 }
 
 
@@ -28,11 +31,11 @@ void ofApp::resetLeftRightPoint() {
 
 
 	point_left.setPosition(point_center.getPosition().x - distance * 3, point_center.getPosition().y, point_center.getPosition().z); // pos iniziale
-	point_left.set(1, 1, 1); //grandezza
-
+	point_left.set(0.0001); //grandezza
+	point_left.setOrientation(ofVec3f(0, 0, 0));
 	point_right.setPosition(point_center.getPosition().x + distance * 3, point_center.getPosition().y, point_center.getPosition().z); // pos iniziale
-	point_right.set(1, 1, 1); //grandezza
-
+	point_right.set(0.0001); //grandezza
+	point_right.setOrientation(ofVec3f(0, 0, 0));
 
 }
 
@@ -149,7 +152,13 @@ void ofApp::drawCar() {
 
 	ofSetColor(255, 0, 0);
 	ofFill();
+
+	// 	wheel1.mapTexCoordsFromTexture()
+	textureWheels.enableMipmap();
+	textureWheels.setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
+	textureWheels.bind();
 	wheel1.draw();
+	textureWheels.unbind();
 	wheel2.draw();
 	wheel3.draw();
 	wheel4.draw();

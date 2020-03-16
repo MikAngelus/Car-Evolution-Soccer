@@ -34,6 +34,8 @@ public:
 	ofEasyCam					cam;
 
 	ofxBulletSphere*			sphere;
+
+	bool spherebug = false;
 	ofxBulletBox*				car;
 	//ofxBulletCustomShape		octane;
 
@@ -59,9 +61,6 @@ public:
 	/****** ARENA ******/
 	ofxBulletWorldRigid			world;
 	
-
-
-
 
 
 	// GROUND //
@@ -146,7 +145,7 @@ public:
 
 	/*GUI MUSIC*/
 	ofxPanel gui_music;
-	ofxFloatSlider volume=0.0; //MUSICA INIZIALE DEL GIOCO E MUSICA BACKGROUND : SONO ESCLUSI GLI EFFETTI
+	ofxFloatSlider volume=0.2; //MUSICA INIZIALE DEL GIOCO E MUSICA BACKGROUND : SONO ESCLUSI GLI EFFETTI
 
 	
 	
@@ -161,7 +160,7 @@ public:
 	/***** TIME *****/
 	double start_timer;
 	double end_timer;
-	double time_game = 300000; //300.000 are 5 minutes -- 125.000 are 2 minutes
+	double time_game = 10000; //300.000 are 5 minutes -- 125.000 are 2 minutes
 	int timer = 0;
 
 	bool started = false;
@@ -331,7 +330,7 @@ public:
 	float max_speed = 1;
 	int rallentamento_marcia = true; //rallentamento in avanti
 
-	ofVec3f eur_deg;
+	ofVec3f eur_deg, eur_deg1;
 	float theta = 0;
 	float wheel_deg = speed + 1;
 
@@ -352,7 +351,8 @@ public:
 	//vector < string > linesOfTheFile;
 	void readHistory();
 	bool activeHistory = false;
-	ofstream history;
+	bool savedHistory = false;
+
 
 	
 	//FONT

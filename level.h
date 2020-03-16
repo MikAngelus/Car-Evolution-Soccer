@@ -20,10 +20,12 @@ void ofApp::resetCar() {
 	car->setRestitution(0);*/
 
 
+	//wheel1.setOrientation(wheel1.getOrientationEulerDeg());
 
 	createCar();
-
-
+	eur_deg = wheel1.getOrientationEulerDeg();
+	wheel_deg = speed + 1;
+	theta = 0;
 }
 
 void ofApp::resetTarget() {
@@ -65,6 +67,7 @@ void ofApp::play() {
 
 	//MUSIC
 	soundCountdown.play();
+	soundCountdown.setVolume(volume);
 
 
 }
@@ -75,6 +78,7 @@ void ofApp::restartPlay() {
 	resetCar();
 	num_partita++;
 	completed = false;
+	savedHistory = false;
 	levels = 1;
 	//Punteggio
 	ofSetColor(255, 255, 255);

@@ -146,12 +146,11 @@ void ofApp::insertNick() {
 
 
 void ofApp::effectGol() {
-	ofSetColor(0, 0, 0);
 
 	//MUSIC WHEN SCORE
-	soundGol.setVolume(0.25);
+	soundGol.setVolume(volume-0.05);
 	soundGol.play();
-	voiceGol.setVolume(1);
+	voiceGol.setVolume(volume+0.3);
 	voiceGol.play();
 
 }
@@ -335,7 +334,7 @@ void ofApp::draw() {
 				ostacolo9.draw();
 			}
 
-			
+
 
 			ofNoFill();
 			ceiling.draw();
@@ -417,7 +416,7 @@ void ofApp::draw() {
 
 			/*Movimento CAR*/
 			drawCar();
-
+		
 			//cout << wheel_deg << endl;
 			//cout << speed << endl;
 
@@ -429,7 +428,9 @@ void ofApp::draw() {
 
 						
 						cout << "palla colpita" << endl;
+						cout << sphere->getPosition().y << endl;
 
+				
 						if (marcia) {
 
 							sphere->applyCentralForce(ofVec3f(-(speed * sin(theta / 360 * 2 * PI) / 300), 0, -(speed * cos(theta / 360 * 2 * PI) / 300)));
@@ -477,6 +478,7 @@ void ofApp::draw() {
 				timeCompleted = (time_game/1000) - timer;
 				readLevel = levels;
 
+
 			}
 
 			//EFFECT WHEN SCORE
@@ -491,6 +493,9 @@ void ofApp::draw() {
 
 			if (num_partita > 0) {
 
+
+				//if(endsphere->applyCentralForce(ofVec3f(0, 000000000000001, 0));
+
 				if (ofGetSystemTimeMillis() < end_timer) { //PARTITA IN CORSO
 
 					timer = end_timer - ofGetSystemTimeMillis();
@@ -504,9 +509,9 @@ void ofApp::draw() {
 
 					completed = true;
 					timeCompleted = time_game / 1000;
-					
-					//whistle.play()
-					//whistle.setLoop(false);
+
+
+				
 				}
 
 
@@ -522,9 +527,22 @@ void ofApp::draw() {
 					else {
 						subtitle.drawString("Game over!\nLevel completed: " + ofToString(readLevel - 1) + "\nTime: " + ofToString(timeCompleted) + " seconds", ofGetWidth() / 2 - ofGetWidth() / 4, ofGetHeight() / 2 - 75);
 					}
-					//completed = false;
-					cout << "concluso" << endl;
-					//drawInitialGui();
+			
+					if (!savedHistory) {
+
+						//Salvataggio punteggio
+						ofstream fileOUT("data/history.txt", ios::app); // open history.txt in append mode
+						fileOUT << nickname << " - level " << (readLevel-1) << " - " << timeCompleted << " seconds" << endl; // append text to the end of the file
+						fileOUT.close(); // close the file
+						savedHistory = true;
+
+						//fischio finale
+						whistle.play();
+						whistle.setVolume(volume);
+						whistle.setLoop(false);
+						cout << "fischio finale" << endl;
+
+					}
 				}
 
 
