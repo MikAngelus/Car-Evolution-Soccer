@@ -2,24 +2,24 @@
 void ofApp::createCar() {
 
 	wheel1.setPosition(50, yGround, 50); // pos iniziale
-	wheel1.set(1, 4, 4);
+	wheel1.set(0.01, 4, 4);
 	wheel1.setOrientation(ofVec3f(0, 0, 0));
 
-
 	wheel2.setPosition(50 + distance, yGround, 50); // pos iniziale
-	wheel2.set(1, 4, 4);
+	wheel2.set(0.01, 4, 4);
 	wheel2.setOrientation(ofVec3f(0, 0, 0));
 
 	wheel3.setPosition(50, yGround, 50 + distance * 2); // pos iniziale
-	wheel3.set(1, 4, 4);
+	wheel3.set(0.01, 4, 4);
 	wheel3.setOrientation(ofVec3f(0, 0, 0));
 
 	wheel4.setPosition(50 + distance, yGround, 50 + distance * 2); // pos iniziale
-	wheel4.set(1, 4, 4);
+	wheel4.set(0.01, 4, 4);
 	wheel4.setOrientation(ofVec3f(0,0,0));
 
-	point_center.setPosition(wheel1.getPosition().x + distance / 2, wheel1.getPosition().y, wheel1.getPosition().z + distance); // pos iniziale
-	point_center.set(distance + distance / 4, 2, distance + distance / 2); //carrozzeria
+	
+	point_center.set(distance-1, 3, distance*2); //carrozzeria
+	point_center.setPosition(wheel1.getPosition().x + distance / 2, wheel1.getPosition().y+point_center.getSize().y/2, wheel1.getPosition().z + distance); // pos iniziale
 	point_center.setOrientation(ofVec3f(0,0,0));
 
 	resetLeftRightPoint();
@@ -150,21 +150,37 @@ void ofApp::moveS() {
 
 void ofApp::drawCar() {
 
-	ofSetColor(255, 0, 0);
+	ofSetColor(255);
 	ofFill();
+//	cout << "COORDINATE:" << wheel1.getMesh() << endl;
+	//textureWheels.enableMipmap();
 
-	// 	wheel1.mapTexCoordsFromTexture()
-	textureWheels.enableMipmap();
-	textureWheels.setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
+	//uv.set(1, 4);
+
+	
+	//wheel1.draw();
+
+
+	point_left.draw();
+	point_right.draw();
+	
+	ofEnableDepthTest();
 	textureWheels.bind();
+	ofSetColor(255);
 	wheel1.draw();
-	textureWheels.unbind();
 	wheel2.draw();
 	wheel3.draw();
 	wheel4.draw();
-	point_left.draw();
-	point_right.draw();
-	point_center.draw();
+	textureWheels.unbind();
+	ofDisableDepthTest();
+
+
+	ofEnableDepthTest();
+	//textureBody.bind();
+	ofSetColor(0,0,0);
+	point_center.drawWireframe();
+	//textureBody.unbind();
+	ofDisableDepthTest();
 
 	if (controlArena()) {
 

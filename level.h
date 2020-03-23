@@ -5,6 +5,7 @@ void ofApp::resetBall() {
 	sphere->remove();
 	sphere = new ofxBulletSphere();
 	sphere->create(world.world, ofVec3f(50, 50, 50), 0.000001, ball_radius);
+
 	sphere->add();
 	sphere->setRestitution(ball_restitution);
 
@@ -246,10 +247,19 @@ void ofApp::level6() {
 
 	if (!checkLevel6) {
 
-		ostacolo6.remove();
-		ostacolo6.create(world.world, ofVec3f(xGround - overflow, 0, zGround / 2 ), 0, xOst6, yOst6, zOst6);
-		ostacolo6.setProperties(.25, .95);
-		ostacolo6.add();
+		if (ostacolo6 != nullptr) {
+
+			cout << "Prova" << endl;
+			// the remove function is called internally in the deconstructor
+			delete ostacolo6;
+			ostacolo6 = nullptr;
+
+		}
+
+		ostacolo6 = new ofxBulletBox();
+		ostacolo6->create(world.world, ofVec3f(xGround - overflow, yOst6 / 2, zGround / 2 ), 0, xOst6, yOst6, zOst6);
+		ostacolo6->setProperties(.25, .95);
+		ostacolo6->add();
 
 		if (overflow <= xGround && !reverseLevel6) {
 
@@ -286,14 +296,39 @@ void ofApp::level6() {
 
 void ofApp::level7() {
 
+	/*RIMUOVE I PRECEDENTI OSTACOLI*/
+	
+	if (ostacolo6 != nullptr) {
 
+		cout << "Prova" << endl;
+		// the remove function is called internally in the deconstructor
+		delete ostacolo6;
+		ostacolo6 = nullptr;
+
+	}
+
+	//ostacolo6->remove();
+	ostacolo6 = new ofxBulletBox();
+	ostacolo6->create(world.world, ofVec3f((xGround - overflow)*-10, yBack1 / 2, -50), 0, xOst6, yOst6, zOst6);
+	ostacolo6->setProperties(.25, .95);
+	ostacolo6->add();
+
+
+	if (ostacolo7 != nullptr) {
+
+		cout << "Prova" << endl;
+		// the remove function is called internally in the deconstructor
+		delete ostacolo7;
+		ostacolo7 = nullptr;
+
+	}
 
 	if (!checkLevel7) {
 
-		ostacolo7.remove();
-		ostacolo7.create(world.world, ofVec3f(xGround/2 , 0 + overflow, zGround / 4), 0, xOst7, yOst7, zOst7);
-		ostacolo7.setProperties(.25, .95);
-		ostacolo7.add();
+		ostacolo7 = new ofxBulletBox();
+		ostacolo7->create(world.world, ofVec3f(xGround/2 , yOst7 / 2 + overflow, zGround / 4), 0, xOst7, yOst7, zOst7);
+		ostacolo7->setProperties(.25, .95);
+		ostacolo7->add();
 
 		if (overflow <= yBack && !reverseLevel7) {
 
@@ -328,13 +363,32 @@ void ofApp::level7() {
 
 void ofApp::level8() {
 
+	/*RIMUOVE I PRECEDENTI OSTACOLI*/
+
+	if (ostacolo6 != nullptr) {
+
+		cout << "Prova" << endl;
+		// the remove function is called internally in the deconstructor
+		delete ostacolo6;
+		ostacolo6 = nullptr;
+
+	}
+
+	if (ostacolo7 != nullptr) {
+
+		cout << "Prova" << endl;
+		// the remove function is called internally in the deconstructor
+		delete ostacolo7;
+		ostacolo7 = nullptr;
+
+	}
 
 	if (!checkLevel6) {
 
-		ostacolo6.remove();
-		ostacolo6.create(world.world, ofVec3f(xGround - overflow, 0, zGround / 2), 0, xOst6, yOst6, zOst6);
-		ostacolo6.setProperties(.25, .95);
-		ostacolo6.add();
+		ostacolo6 = new ofxBulletBox();
+		ostacolo6->create(world.world, ofVec3f(xGround - overflow, yOst6 / 2, zGround / 2), 0, xOst6, yOst6, zOst6);
+		ostacolo6->setProperties(.25, .95);
+		ostacolo6->add();
 
 		if (overflow <= xGround && !reverseLevel6) {
 
@@ -365,10 +419,11 @@ void ofApp::level8() {
 
 	if (!checkLevel7) {
 
-		ostacolo7.remove();
-		ostacolo7.create(world.world, ofVec3f(xGround / 2, 0 + overflow, zGround / 4), 0, xOst7, yOst7, zOst7);
-		ostacolo7.setProperties(.25, .95);
-		ostacolo7.add();
+	
+		ostacolo7 = new ofxBulletBox();
+		ostacolo7->create(world.world, ofVec3f(xGround / 2, yOst7 / 2 + overflow, zGround / 4), 0, xOst7, yOst7, zOst7);
+		ostacolo7->setProperties(.25, .95);
+		ostacolo7->add();
 
 		if (overflow <= xGround && !reverseLevel7) {
 
@@ -404,13 +459,44 @@ void ofApp::level8() {
 
 void ofApp::level9() {
 
+	/*RIMUOVE I PRECEDENTI OSTACOLI*/
+
+	if (ostacolo6 != nullptr) {
+
+		cout << "Prova" << endl;
+		// the remove function is called internally in the deconstructor
+		delete ostacolo6;
+		ostacolo6 = nullptr;
+
+	}
+
+	//ostacolo6->remove();
+	ostacolo6 = new ofxBulletBox();
+	ostacolo6->create(world.world, ofVec3f((xGround - overflow)*-10, 0, -50), 0, xOst6, yOst6, zOst6);
+	ostacolo6->setProperties(.25, .95);
+	ostacolo6->add();
+
+	if (ostacolo7 != nullptr) {
+
+		cout << "Prova" << endl;
+		// the remove function is called internally in the deconstructor
+		delete ostacolo7;
+		ostacolo7 = nullptr;
+
+	}
+
+	//ostacolo6->remove();
+	ostacolo7 = new ofxBulletBox();
+	ostacolo7->create(world.world, ofVec3f((xGround - overflow)*-10, 0, -50), 0, xOst6, yOst6, zOst6);
+	ostacolo7->setProperties(.25, .95);
+	ostacolo7->add();
 
 	if (!checkLevel9) {
 
-		ostacolo9.remove();
-		ostacolo9.create(world.world, ofVec3f(xBack1 + overflow, yOst9/2, 0), 0, xOst9, yOst9, zOst9);
-		ostacolo9.setProperties(.25, .95);
-		ostacolo9.add();
+		ostacolo9 = new ofxBulletBox();
+		ostacolo9->create(world.world, ofVec3f(xBack1 + overflow, yOst9/2, 0), 0, xOst9, yOst9, zOst9);
+		ostacolo9->setProperties(.25, .95);
+		ostacolo9->add();
 
 		if (overflow <= xTarget && !reverseLevel9) {
 
@@ -447,10 +533,10 @@ void ofApp::level10() {
 
 	if (!checkLevel10) {
 
-		ostacolo9.remove();
-		ostacolo9.create(world.world, ofVec3f(xBack1 + overflow, yOst9 / 2, 0), 0, xOst9, yOst9, zOst9);
-		ostacolo9.setProperties(.25, .95);
-		ostacolo9.add();
+		ostacolo9 = new ofxBulletBox();
+		ostacolo9->create(world.world, ofVec3f(xBack1 + overflow, yOst9 / 2, 0), 0, xOst9, yOst9, zOst9);
+		ostacolo9->setProperties(.25, .95);
+		ostacolo9->add();
 
 		if (overflow <= xTarget && !reverseLevel10) {
 

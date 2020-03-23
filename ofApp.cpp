@@ -12,15 +12,12 @@ void ofApp::setup() {
 
 	ofSetFrameRate(60);
 
-
-
-
 	//Background
 	background.load("background.jpg");
+	backgroundGame.load("space.jpg");
 
 	//SCOREBOARD
 	scoreboard.load("scoreboard.png");
-
 
 	//MUSIC
 	initSound.load("intro.mp3");
@@ -40,10 +37,13 @@ void ofApp::setup() {
 
 	/*TEXTURE*/
 	ofDisableArbTex();
-	ofLoadImage(textureBall, "texture_ball.png");
+	ofLoadImage(textureBall, "ball.jpg");
 	ofLoadImage(textureGround, "field.jpg");
 	ofLoadImage(textureWheels, "wheels.png");
-	ofLoadImage(textureWall, "enclosure.jpg");
+	ofLoadImage(textureWall, "wall.png");
+	ofLoadImage(textureWall, "wall.png");
+	ofLoadImage(textureObstacle, "obstacle.jpg");
+	ofLoadImage(textureBody, "red_carbon.jpg");
 	//textureGround.bind(); 
 	//textureGround.unbind();
 
@@ -101,23 +101,7 @@ void ofApp::setup() {
 	box.set(0.001);
 
 
-
-	//LOADING 3D CAR
-
-	octaneModel.loadModel("Octane.obj",20);
-	cout << octaneModel.getNumMeshes() << endl;
-	
-	
-
-	octaneModel.setScale(0.01, 0.01, 0.01);
-	octaneModel.setPosition(20, 20, 20);
-	octaneModel.setRotation(2,180.f, 1,0,0);
-
-
 	ofVec3f scale(1, 1, 1);
-
-	ofQuaternion startRot = ofQuaternion(1., 0., 0., PI);
-	
 
 	ofDisableDepthTest();
 
@@ -264,30 +248,106 @@ void ofApp::draw() {
 
 		}
 		else {
+		
 			ofEnableAlphaBlending();
-			ofSetColor(255, 255, 255);
+			
+			//backgroundGame.draw(0, 0);
+			ofBackground(176, 224, 230);
 
 
 
 			//scoreboard.draw(ofGetWidth()/2 -scoreboard.getWidth()/2 , 100);
 
-			if (!completed) {
-			subtitle.drawString("Level " + ofToString(readLevel), ofGetWidth() / 2 - 150, 100);
-			label.drawString("Second remaining " + ofToString(timer), ofGetWidth() / 2 - 75, 150);	
-			}
-
+			
 			cam.begin();
 			ofSetColor(255, 255, 255);
 			
+
+
+
+			/*GROUND*/
+			ofSetColor(255, 255, 255, 200);
+			textureGround.bind();
+			ground.draw();
+			textureGround.unbind();
+
+
+
+			ofEnableDepthTest();
+			textureWall.bind();
+			ofSetColor(255, 255, 255, 200);
+			back1.draw();
+			back2.draw();	
 			
+			//target.draw();
+			textureWall.unbind();
+			ofDisableDepthTest();
+
+
+
+			settingLevel();
+
+			if (levels == 6) {
+
+				ofEnableDepthTest();
+				textureObstacle.bind();
+				ofSetColor(255, 255, 255);
+				ostacolo6->draw();
+				textureObstacle.unbind();
+				ofDisableDepthTest();
+			}
+
+			if (levels == 7) {
+				ofEnableDepthTest();
+				textureObstacle.bind();
+				ofSetColor(255, 255, 255);
+				ostacolo7->draw();
+				textureObstacle.unbind();
+				ofDisableDepthTest();
+			}
+
+			if (levels == 8) {
+				ofEnableDepthTest();
+				textureObstacle.bind();
+				ofSetColor(255, 255, 255);
+				ostacolo6->draw();
+				ostacolo7->draw();
+				textureObstacle.unbind();
+				ofDisableDepthTest();
+			}
+
+			if (levels == 9) {
+				ofEnableDepthTest();
+				textureObstacle.bind();
+				ofSetColor(255, 255, 255);
+				ostacolo9->draw();
+				textureObstacle.unbind();
+				ofDisableDepthTest();
+			}
+
+			if (levels == 10) {
+
+				ofEnableDepthTest();
+				textureObstacle.bind();
+				ofSetColor(255, 255, 255);
+				ostacolo9->draw();
+				textureObstacle.unbind();
+				ofDisableDepthTest();
+			}
+
+
+						
 			
 			//if (scelta == 1 ) {
 			//	level1();
-		
-			textureWall.unbind();
-			target.draw();
+			ofEnableDepthTest();
 			textureWall.bind();
-			//}
+			ofSetColor(255,255,255,200);
+			target.draw();
+			right.draw();
+			left.draw();
+			textureWall.unbind();
+			ofDisableDepthTest();
 			//else
 
 			//{
@@ -300,74 +360,25 @@ void ofApp::draw() {
 			//ofSetColor(255, 0, 0);
 			ofFill();
 
-			/*GROUND*/
-			textureGround.bind(); 
-			ground.draw();
-			textureGround.unbind();
-			
 	
-			settingLevel();
-			
-			if (levels == 6) {
-				
-				ostacolo6.draw();
-			}
-			
-			if (levels == 7) {
-
-				ostacolo7.draw();
-			}
-			
-			if (levels == 8) {
-				ostacolo6.draw();
-				ostacolo7.draw();
-
-			}
-
-			if (levels == 9) {
-		
-				ostacolo9.draw();
-			}
-
-			if (levels == 10) {
-		
-				ostacolo9.draw();
-			}
-
-
+	
 
 			ofNoFill();
 			ceiling.draw();
-			textureWall.bind();
-			back1.draw();
-			textureWall.unbind();
-		
-
-			textureWall.bind();
-			back2.draw();
-		
-			right.draw();
-			textureWall.unbind();
-			textureWall.bind();
-			left.draw();
-			textureWall.unbind();
-			textureWall.bind();
 			front.draw();
-			textureWall.unbind();
-
 			ofFill();
 
 		
 
-			if (sphere->checkCreate() == true && car->checkCreate() == true) {
-
-				ofSetColor(255, 0, 0);
-				//textureBall.bind(); //PROBLEMI DELLA TEXTURE CON OFBULLET
+			if (sphere->checkCreate() == true ) {
+				ofEnableDepthTest();
+				ofSetColor(255, 255, 255);
+				textureBall.bind(); 
 				sphere->draw();
-				//textureBall.unbind();
+				textureBall.unbind();
+				ofDisableDepthTest();
 				ofNoFill();
 				ofSetColor(250, 250, 100);
-				car->draw();
 
 				if (sphere->getPosition().z + sphere->getRadius() < 0) { //CONTROLLO PER VEDERE SE E' GOL
 
@@ -454,7 +465,7 @@ void ofApp::draw() {
 			car->add();
 			car->draw();*/
 
-			box.draw();
+			//box.draw();
 			//box.drawAxes(1000);
 
 			//Il modello 3D segue l'oggetto CAR (BULLET BOX)
@@ -466,8 +477,16 @@ void ofApp::draw() {
 			//textureCar.unbind();
 			cam.end();
 
+
+			if (!completed) {
+				ofSetColor(0,0,0);
+				subtitle.drawString("Level " + ofToString(readLevel), ofGetWidth() / 2 - 150, 100);
+				label.drawString("Second remaining " + ofToString(timer), ofGetWidth() / 2 - 75, 150);
+			}
+
+
 			glDisable(GL_DEPTH_TEST);
-			ofSetColor(0, 0, 255);
+			ofSetColor(34, 169, 0);
 
 
 			if (levels > 10 && !completed) {

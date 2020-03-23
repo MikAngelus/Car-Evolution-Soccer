@@ -3,7 +3,6 @@
 #include "ofMain.h"
 #include "ofxBullet.h"
 #include "ofxGui.h"
-#include "ofxAssimpModelLoader.h"
 #include <iostream>  
 #include <fstream>  
 #include <string>  
@@ -160,7 +159,7 @@ public:
 	/***** TIME *****/
 	double start_timer;
 	double end_timer;
-	double time_game = 10000; //300.000 are 5 minutes -- 125.000 are 2 minutes
+	double time_game = 300000; //300 000 are 5 minutes -- 125 000 are 2 minutes
 	int timer = 0;
 
 	bool started = false;
@@ -198,9 +197,9 @@ public:
 
 	// OSTACOLO 6//
 	int xOst6 = 40;
-	int yOst6 = yBack1/2;
+	int yOst6 = 20;
 	int zOst6 = 5;
-	ofxBulletBox ostacolo6;
+	ofxBulletBox* ostacolo6;
 
 	/*LEVEL 7*/
 	void level7();
@@ -211,7 +210,7 @@ public:
 	int xOst7 = xGround;
 	int yOst7 = yBack1 / 2;
 	int zOst7 = yGround;
-	ofxBulletBox ostacolo7;
+	ofxBulletBox* ostacolo7;
 
 
 	/*LEVEL 8*/
@@ -236,7 +235,7 @@ public:
 	int xOst9 = 15;
 	int yOst9 = 15;
 	int zOst9 = 15;
-	ofxBulletBox ostacolo9;
+	ofxBulletBox* ostacolo9;
 
 
 	int readLevel;
@@ -248,19 +247,9 @@ public:
 	ofxIntSlider levels=1;
 	
 
-	//3D OBJECT
-
-	ofxAssimpModelLoader octaneModel;
-	vector<ofxBulletCustomShape*>	logos;
-	ofVboMesh mesh;
-	bool bUsingMesh=true;
-	ofNode meshNode;
-	//ofxBulletWorldRigid			world;
-	ofMaterial						logoMat;
-
-
 	//background
 	ofImage background;
+	ofImage backgroundGame;
 
 
 	//SOUNDS
@@ -299,6 +288,8 @@ public:
 	ofTexture textureGround;
 	ofTexture textureWheels;
 	ofTexture textureWall;
+	ofTexture textureObstacle;
+	ofTexture textureBody;
 
 	//SCOREBOARD
 	ofImage scoreboard;
@@ -352,12 +343,11 @@ public:
 	void readHistory();
 	bool activeHistory = false;
 	bool savedHistory = false;
-
-
 	
 	//FONT
 	ofTrueTypeFont title;
 	ofTrueTypeFont subtitle;
 	ofTrueTypeFont label;
+
 };
 
