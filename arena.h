@@ -57,23 +57,23 @@ void ofApp::createObstacle() {
 
 
 	//OSTACOLO livello 6
-	ostacolo6 =  new ofxBulletBox();
-	ostacolo6->create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
-	ostacolo6->setProperties(.25, .95);
-	ostacolo6->add();
+	obs6 =  new ofxBulletBox();
+	obs6->create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
+	obs6->setProperties(.25, .95);
+	obs6->add();
 
 	//OSTACOLO livello 7
-	ostacolo7 = new ofxBulletBox();
-	ostacolo7->create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
-	ostacolo7->setProperties(.25, .95);
-	ostacolo7->add();
+	obs7 = new ofxBulletBox();
+	obs7->create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
+	obs7->setProperties(.25, .95);
+	obs7->add();
 
 
 	//OSTACOLO LIVELLO 9
-	ostacolo9 = new ofxBulletBox();
-	ostacolo9->create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
-	ostacolo9->setProperties(.25, .95);
-	ostacolo9->add();
+	obs9 = new ofxBulletBox();
+	obs9->create(world.world, ofVec3f(xGround, 0, zGround / 2), 0, 0, 0, 0);
+	obs9->setProperties(.25, .95);
+	obs9->add();
 
 
 

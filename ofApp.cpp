@@ -3,6 +3,7 @@
 #include "gui.h"
 #include "car.h"
 #include "arena.h"
+//Includiamo le librerie per la gestione dei file e delle stringhe
 #include <iostream>  
 #include <fstream>  
 #include <string>  
@@ -10,33 +11,36 @@
 //--------------------------------------------------------------
 void ofApp::setup() {
 
-	ofSetFrameRate(60);
+	ofSetFrameRate(60); //Settiamo il framerate a 60
 
 	//Background
 	background.load("background.jpg");
-	backgroundGame.load("space.jpg");
+	//backgroundGame.load("space.jpg");
 
 	//SCOREBOARD
-	scoreboard.load("scoreboard.png");
+	//scoreboard.load("scoreboard.png");
 
-	//MUSIC
+	//Caricamento delle musiche di gioco
 	initSound.load("intro.mp3");
 	initSound.play();
 	initSound.setVolume(volume);
 	soundGol.load("goal.mp3");
-	soundBall.load("bounce.mp3");
+	//soundBall.load("bounce.mp3");
 	voiceGol.load("goal_voice.ogg");
 	soundCountdown.load("countdown.mp3");
 	generalSound.load("general.mp3");
-	soundAcc.load("acceleration.ogg");
+	//soundAcc.load("acceleration.ogg");
 	whistle.load("whistle.mp3");
+
 
 	/*light.enable();
 	light.setPosition(ofVec3f(100, 100, 200));
 	light.lookAt(ofVec3f(0, 0, 0));*/
 
-	/*TEXTURE*/
-	ofDisableArbTex();
+	
+	
+	// Caricamento delle TEXTURE
+	ofDisableArbTex(); //Permettere il corretto caricamento delle immagini come texture
 	ofLoadImage(textureBall, "ball.jpg");
 	ofLoadImage(textureGround, "field.jpg");
 	ofLoadImage(textureWheels, "wheels.png");
@@ -47,83 +51,82 @@ void ofApp::setup() {
 	//textureGround.bind(); 
 	//textureGround.unbind();
 
-	/*GUI*/
-
+	// Setting dei pulsanti alle relative funzioni void
 	resetBallButton.addListener(this, &ofApp::resetBall);
 	resetCarButton.addListener(this, &ofApp::resetCar);
 	playGame.addListener(this, &ofApp::play);
 	restartGame.addListener(this, &ofApp::restartPlay);
-	levelButton.addListener(this, &ofApp::settingLevel);
+	//levelButton.addListener(this, &ofApp::settingLevel);
 	rules.addListener(this, &ofApp::readRules);
 	buttonHistory.addListener(this, &ofApp::readHistory);
 	
 
-
-	drawInitialGui();
+	// Inizializzo le GUI
 	drawGuiGame();
+	drawGuiStatistics();
 	drawGuiSetting();
-	drawFirstGui();
+	drawGuiFirst();
 	
 
-
-
-	//SETUP CAR
+	//Setup Car
 	createCar();
-	eur_deg = wheel1.getOrientationEulerDeg();
+	eur_deg = wheel1.getOrientationEulerDeg(); //Variabile che viene utilizzato per calcolare l'angolo
 
 
-	//CREATE NEW ARENA
+	//Setup Arena
 	createArena();
 
 
-	//CREATE OBSTACLE
+	//Setup Ostacoli
 	createObstacle();
 	//play();
 
+	//Inizializzo una nuova istanza del pallone
 	sphere = new ofxBulletSphere();
 	sphere->create(world.world, ofVec3f(50, 50, 50), 0.000001, ball_radius);
+
 	//sphere->add();
 	//sphere->setRestitution(3);
 
-	car = new ofxBulletBox();
-	car->create(world.world, ofVec3f(100, 10, 100), 1, 7, 4, 10);
+	//car = new ofxBulletBox();
+	//car->create(world.world, ofVec3f(100, 10, 100), 1, 7, 4, 10);
 	//car->add();
 	//car->setRestitution(0);
 
-	ofEnableDepthTest();
-	ofSetVerticalSync(true);
+	ofEnableDepthTest(); //Abilitiamo GL Rendering in modalità Depth Test
+	ofSetVerticalSync(true); // Setting del V-sync
 
-	cam.setPosition(ofVec3f(60, 30, 160)); //Posizione inziale camera
-	cam.disableMouseInput();
+	cam.setPosition(ofVec3f(60, 30, 160)); //Setting posizione inziale camera
+	cam.disableMouseInput(); //Disabilitato gli input del mouse della camera
+
 	//cam.setDistance(100);
 
-	box.setPosition(0, 0, 0); // asse all'origine
-	box.set(0.001);
+	//box.setPosition(0, 0, 0); // asse all'origine
+	//box.set(0.001);
+	//ofVec3f scale(1, 1, 1);
+
+	ofDisableDepthTest(); //Disabilitiamo GL Rendering in modalità Depth Test
 
 
-	ofVec3f scale(1, 1, 1);
-
-	ofDisableDepthTest();
-
-	//load font
+	//Caricamento FONT
 	title.loadFont("ea.ttf", 100);
 	subtitle.loadFont("ea.ttf", 75);
 	label.loadFont("ea.ttf", 15);
 	ofxGuiSetFont("ea.ttf", 12);
 
-}
 
+
+}
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	world.update();
+	world.update(); //Aggiornamento della variale
 
 }
 
-
 void ofApp::insertNick() {
 
-	nickname = ofSystemTextBoxDialog("Insert your Nickname", nickname);
+	nickname = ofSystemTextBoxDialog("Insert your Nickname", nickname); // Dialog Box che permettere di inserire e salvare il Nickname
 
 }
 
@@ -292,7 +295,7 @@ void ofApp::draw() {
 				ofEnableDepthTest();
 				textureObstacle.bind();
 				ofSetColor(255, 255, 255);
-				ostacolo6->draw();
+				obs6->draw();
 				textureObstacle.unbind();
 				ofDisableDepthTest();
 			}
@@ -301,7 +304,7 @@ void ofApp::draw() {
 				ofEnableDepthTest();
 				textureObstacle.bind();
 				ofSetColor(255, 255, 255);
-				ostacolo7->draw();
+				obs7->draw();
 				textureObstacle.unbind();
 				ofDisableDepthTest();
 			}
@@ -310,8 +313,8 @@ void ofApp::draw() {
 				ofEnableDepthTest();
 				textureObstacle.bind();
 				ofSetColor(255, 255, 255);
-				ostacolo6->draw();
-				ostacolo7->draw();
+				obs6->draw();
+				obs7->draw();
 				textureObstacle.unbind();
 				ofDisableDepthTest();
 			}
@@ -320,7 +323,7 @@ void ofApp::draw() {
 				ofEnableDepthTest();
 				textureObstacle.bind();
 				ofSetColor(255, 255, 255);
-				ostacolo9->draw();
+				obs9->draw();
 				textureObstacle.unbind();
 				ofDisableDepthTest();
 			}
@@ -330,7 +333,7 @@ void ofApp::draw() {
 				ofEnableDepthTest();
 				textureObstacle.bind();
 				ofSetColor(255, 255, 255);
-				ostacolo9->draw();
+				obs9->draw();
 				textureObstacle.unbind();
 				ofDisableDepthTest();
 			}
@@ -405,7 +408,7 @@ void ofApp::draw() {
 				}
 
 				//Controllo per non far andare la macchina dentro la porta
-				if (car->getPosition().z + car->getWidth() / 4 < 0) {
+				/*if (car->getPosition().z + car->getWidth() / 4 < 0) {
 					ofVec3f posCar = car->getPosition();
 					car->remove();
 					car = new ofxBulletBox();
@@ -413,7 +416,7 @@ void ofApp::draw() {
 					car->add();
 
 
-				}
+				}*/
 
 
 				//cout << sphere->getPosition().y << endl;
@@ -510,7 +513,7 @@ void ofApp::draw() {
 
 			}
 
-			if (num_partita > 0) {
+			if (num_match > 0) {
 
 
 				//if(endsphere->applyCentralForce(ofVec3f(0, 000000000000001, 0));
@@ -593,9 +596,9 @@ void ofApp::draw() {
 			generalSound.setVolume(volume);
 
 
-			if (num_partita > 0) {
+			if (num_match > 0) {
 				gui_stats.clear();
-				drawGuiGame();
+				drawGuiStatistics();
 				gui_stats.draw();
 			}
 
