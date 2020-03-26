@@ -15,30 +15,17 @@ void ofApp::setup() {
 
 	//Background
 	background.load("background.jpg");
-	//backgroundGame.load("space.jpg");
-
-	//SCOREBOARD
-	//scoreboard.load("scoreboard.png");
 
 	//Caricamento delle musiche di gioco
 	initSound.load("intro.mp3");
 	initSound.play();
 	initSound.setVolume(volume);
 	soundGol.load("goal.mp3");
-	//soundBall.load("bounce.mp3");
 	voiceGol.load("goal_voice.ogg");
 	soundCountdown.load("countdown.mp3");
 	generalSound.load("general.mp3");
-	//soundAcc.load("acceleration.ogg");
 	whistle.load("whistle.mp3");
 
-
-	/*light.enable();
-	light.setPosition(ofVec3f(100, 100, 200));
-	light.lookAt(ofVec3f(0, 0, 0));*/
-
-	
-	
 	// Caricamento delle TEXTURE
 	ofDisableArbTex(); //Permettere il corretto caricamento delle immagini come texture
 	ofLoadImage(textureBall, "ball.jpg");
@@ -48,65 +35,39 @@ void ofApp::setup() {
 	ofLoadImage(textureWall, "wall.png");
 	ofLoadImage(textureObstacle, "obstacle.jpg");
 	ofLoadImage(textureBody, "red_carbon.jpg");
-	//textureGround.bind(); 
-	//textureGround.unbind();
 
 	// Setting dei pulsanti alle relative funzioni void
 	resetBallButton.addListener(this, &ofApp::resetBall);
 	resetCarButton.addListener(this, &ofApp::resetCar);
 	playGame.addListener(this, &ofApp::play);
 	restartGame.addListener(this, &ofApp::restartPlay);
-	//levelButton.addListener(this, &ofApp::settingLevel);
 	rules.addListener(this, &ofApp::readRules);
 	buttonHistory.addListener(this, &ofApp::readHistory);
 	
-
 	// Inizializzo le GUI
 	drawGuiGame();
 	drawGuiStatistics();
 	drawGuiSetting();
 	drawGuiFirst();
 	
-
 	//Setup Car
 	createCar();
-	eur_deg = wheel1.getOrientationEulerDeg(); //Variabile che viene utilizzato per calcolare l'angolo
-
 
 	//Setup Arena
 	createArena();
 
-
 	//Setup Ostacoli
 	createObstacle();
-	//play();
 
 	//Inizializzo una nuova istanza del pallone
 	sphere = new ofxBulletSphere();
 	sphere->create(world.world, ofVec3f(50, 50, 50), 0.000001, ball_radius);
 
-	//sphere->add();
-	//sphere->setRestitution(3);
-
-	//car = new ofxBulletBox();
-	//car->create(world.world, ofVec3f(100, 10, 100), 1, 7, 4, 10);
-	//car->add();
-	//car->setRestitution(0);
-
 	ofEnableDepthTest(); //Abilitiamo GL Rendering in modalità Depth Test
 	ofSetVerticalSync(true); // Setting del V-sync
-
 	cam.setPosition(ofVec3f(60, 30, 160)); //Setting posizione inziale camera
 	cam.disableMouseInput(); //Disabilitato gli input del mouse della camera
-
-	//cam.setDistance(100);
-
-	//box.setPosition(0, 0, 0); // asse all'origine
-	//box.set(0.001);
-	//ofVec3f scale(1, 1, 1);
-
 	ofDisableDepthTest(); //Disabilitiamo GL Rendering in modalità Depth Test
-
 
 	//Caricamento FONT
 	title.loadFont("ea.ttf", 100);
@@ -114,14 +75,11 @@ void ofApp::setup() {
 	label.loadFont("ea.ttf", 15);
 	ofxGuiSetFont("ea.ttf", 12);
 
-
-
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
 	world.update(); //Aggiornamento della variale
-
 }
 
 void ofApp::insertNick() {
@@ -129,8 +87,6 @@ void ofApp::insertNick() {
 	nickname = ofSystemTextBoxDialog("Insert your Nickname", nickname); // Dialog Box che permettere di inserire e salvare il Nickname
 
 }
-
-
 
 void ofApp::effectGol() {
 
@@ -142,25 +98,25 @@ void ofApp::effectGol() {
 
 }
 
-void ofApp::readHistory() {
+void ofApp::readHistory() { //Funzione legge la cronologia 
 
 	activeHistory = true;
-	linesOfTheFile.clear();
+	linesOfTheFile.clear(); //Pulisce l'array che contiene le righe del file
 
-	ofBuffer buffer = ofBufferFromFile("history.txt");
+	ofBuffer buffer = ofBufferFromFile("history.txt"); //Prende il file in input
 	for (auto line : buffer.getLines()) {
-		linesOfTheFile.push_back(line);
+		linesOfTheFile.push_back(line); //Inserisce le righe lette nel file
 	}
 }
 
-void ofApp::readRules() {
+void ofApp::readRules() {// Funzione legge le rgole
 
 	activeRules = true;
 	linesOfTheFile.clear();
 
-	ofBuffer buffer = ofBufferFromFile("rules.txt");
+	ofBuffer buffer = ofBufferFromFile("rules.txt"); //Prende il file in input
 	for (auto line : buffer.getLines()) {
-		linesOfTheFile.push_back(line);
+		linesOfTheFile.push_back(line);  //Inserisce le righe lette nel file
 	}
 
 }
@@ -168,44 +124,29 @@ void ofApp::readRules() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 
-	/*glEnable(GL_DEPTH_TEST);
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-	glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
-	glEnable(GL_NORMALIZE);
-	glDisable(GL_CULL_FACE);*/
-	
-
-	if (initialMenu == true) {
+	if (initialMenu == true) { //Se si è dentro il menù iniziale
 		ofSetColor(255, 255, 255);
-		background.draw(0, 0);
-		//drawInitialGui();
+		background.draw(0, 0); //Sfondo
 		gui_first.draw();
-		title.drawString("CAR SOCCER EVOLUTION", 250, 120);
+		title.drawString("CAR SOCCER EVOLUTION", 250, 120); //Titolo del gioco
 
 		
-		//fontSize++;
-		//font.drawString("CIAONE", ofGetWidth() / 2, ofGetHeight() / 2);
-
-
-		if (nickname.empty()) {
+		if (nickname.empty()) { //Verifico se il nickname è valorizzato --> se no chiamo la funzione
 
 			insertNick();
 		}
 		
-		subtitle.drawString("Welcome " + nickname, ofGetWidth() / 2 - ofGetWidth() / 4 +75, 300);
+		subtitle.drawString("Welcome " + nickname, ofGetWidth() / 2 - ofGetWidth() / 4 +75, 300); 
 
 	
-		if (activeRules || activeHistory) {
+		if (activeRules || activeHistory) { //Se attivo le regole o la cronologia
 
 			int padding = 18;
 			ofSetColor(255, 255, 255);
-			ofDrawRectRounded(ofGetWidth() / 2 + 125, ofGetHeight() / 2 , 500, 250, 10);
-			
+			ofDrawRectRounded(ofGetWidth() / 2 + 125, ofGetHeight() / 2 , 500, 250, 10); //Riquadro che contiene le righe		
 			ofSetColor(0, 0, 0);
 			for (int j = 0; j < linesOfTheFile.size(); j++) {
-
-				label.drawString(linesOfTheFile[j], ofGetWidth() / 2 + 125 + padding, ofGetHeight() / 2 + padding*2 +j*20);
-
+				label.drawString(linesOfTheFile[j], ofGetWidth() / 2 + 125 + padding, ofGetHeight() / 2 + padding*2 +j*20); //Stampo a video le righe
 			}
 
 		}
@@ -214,84 +155,56 @@ void ofApp::draw() {
 		levels = 0;
 	}
 
-	else {
+	else { //Non si è nel menù iniziale
 
-		initSound.stop();
+		initSound.stop(); //Stop la musica iniziale
 		
-
-		
-		if (!started) {
-			
+		if (!started) { //Se la partita non è iniziata eseguo il countdown		
 
 			if (ofGetSystemTimeMillis() < end_countdown) {
-
 				ofSetColor(255, 255, 255);
 				background.draw(0, 0);
-
 				countdown = end_countdown - ofGetSystemTimeMillis();
-				countdown = countdown / 1000;
-				
-				title.drawString(ofToString(countdown+1), ofGetWidth()/2, ofGetHeight()/2);
-			
-				
+				countdown = countdown / 1000;			
+				title.drawString(ofToString(countdown+1), ofGetWidth()/2, ofGetHeight()/2); //Stampo a video il countdown		
 			}
 
-			else {
-				//MUSIC
-				generalSound.play();
+			else { //Se il countdown è terminato			
+				generalSound.play(); //Play della musica di gioco
 				generalSound.setLoop(true);
 				generalSound.setVolume(volume);
 
-				//TIMER
+				//Imposto il timer di gioco
 				start_timer = ofGetSystemTimeMillis();
 				end_timer = start_timer + time_game;
 				started = !started;
 			}
-
-
 		}
-		else {
-		
-			ofEnableAlphaBlending();
-			
-			//backgroundGame.draw(0, 0);
+		else { //Se la partita è iniziata	
+			ofEnableAlphaBlending();	
 			ofBackground(176, 224, 230);
 
-
-
-			//scoreboard.draw(ofGetWidth()/2 -scoreboard.getWidth()/2 , 100);
-
+			cam.begin(); //Setto la camera
 			
-			cam.begin();
-			ofSetColor(255, 255, 255);
-			
-
-
-
-			/*GROUND*/
+			/*TEXTURE GROUND*/
 			ofSetColor(255, 255, 255, 200);
 			textureGround.bind();
 			ground.draw();
 			textureGround.unbind();
 
 
-
+			/*TEXTURE WALLS*/
 			ofEnableDepthTest();
 			textureWall.bind();
 			ofSetColor(255, 255, 255, 200);
 			back1.draw();
 			back2.draw();	
-			
-			//target.draw();
 			textureWall.unbind();
 			ofDisableDepthTest();
 
-
-
+			// LIVELLI //
 			settingLevel();
-
 			if (levels == 6) {
-
 				ofEnableDepthTest();
 				textureObstacle.bind();
 				ofSetColor(255, 255, 255);
@@ -338,11 +251,6 @@ void ofApp::draw() {
 				ofDisableDepthTest();
 			}
 
-
-						
-			
-			//if (scelta == 1 ) {
-			//	level1();
 			ofEnableDepthTest();
 			textureWall.bind();
 			ofSetColor(255,255,255,200);
@@ -351,29 +259,14 @@ void ofApp::draw() {
 			left.draw();
 			textureWall.unbind();
 			ofDisableDepthTest();
-			//else
-
-			//{
-			//	resetTarget();
-			//	textureWall.unbind();
-			//	target.draw();
-			//	textureWall.bind();
-			//}
 			
-			//ofSetColor(255, 0, 0);
-			ofFill();
-
-	
-	
-
+			//TETTO E MURO FRONTALI NO TEXTURE //
 			ofNoFill();
 			ceiling.draw();
 			front.draw();
 			ofFill();
 
-		
-
-			if (sphere->checkCreate() == true ) {
+			if (sphere->checkCreate() == true ) { //Verifica pallone presente --> se presente lo mostro a video con texture
 				ofEnableDepthTest();
 				ofSetColor(255, 255, 255);
 				textureBall.bind(); 
@@ -383,141 +276,75 @@ void ofApp::draw() {
 				ofNoFill();
 				ofSetColor(250, 250, 100);
 
-				if (sphere->getPosition().z + sphere->getRadius() < 0) { //CONTROLLO PER VEDERE SE E' GOL
+				if (sphere->getPosition().z + sphere->getRadius() < 0) { //Controllo per vedere se è gol 
 
-					resetBall();
+					resetBall(); //Resetto il pallone
 
 					if (ofGetSystemTimeMillis() < end_timer) {
 						score++;
+						//Setto la durata dell'effect e richiamo la funzione
 						effectGol();
-
-						//Setto l'effetto
 						start_effect = ofGetSystemTimeMillis();
 						end_effect = start_effect + time_effect;
-						//effect = end_effect - ofGetSystemTimeMillis();
-						//effect = effect / 1000;
-
-						if (levels < 11) {
-							levels = levels + 1;
-						}
 						
+						if (levels < 11) {  //La variabile livelli dopo il 10 rimane fissa
+							levels = levels + 1; //Passo al livello superiore
+						}	
 						overflow = 0; //resettare il movimento degli ostacoli
-
 					}
-
 				}
-
-				//Controllo per non far andare la macchina dentro la porta
-				/*if (car->getPosition().z + car->getWidth() / 4 < 0) {
-					ofVec3f posCar = car->getPosition();
-					car->remove();
-					car = new ofxBulletBox();
-					car->create(world.world, posCar, 1, 5, 4, 9);
-					car->add();
-
-
-				}*/
-
-
-				//cout << sphere->getPosition().y << endl;
-
 			}
-
-			//effectGol();
-
-
-			//cout << "Centro Macchina:" << point_center.getPosition() << "Palla:" << sphere->getPosition() << endl;
 
 			/*Movimento CAR*/
 			drawCar();
 		
-			//cout << wheel_deg << endl;
-			//cout << speed << endl;
+			//Controllo per verificare se la macchina ha colpito il pallone
+			if (point_center.getPosition().x > sphere->getPosition().x - distance && point_center.getPosition().x < sphere->getPosition().x + distance) { //Asse X
+				if (point_center.getPosition().y + distance > sphere->getPosition().y - ball_radius && point_center.getPosition().y + distance < sphere->getPosition().y + ball_radius) { //Asse Y
+					if (point_center.getPosition().z > sphere->getPosition().z - distance && point_center.getPosition().z < sphere->getPosition().z + distance) { //Asse Z
 
-			if (point_center.getPosition().x > sphere->getPosition().x - distance && point_center.getPosition().x < sphere->getPosition().x + distance) {
-
-				if (point_center.getPosition().y + distance > sphere->getPosition().y - ball_radius && point_center.getPosition().y + distance < sphere->getPosition().y + ball_radius) {
-
-					if (point_center.getPosition().z > sphere->getPosition().z - distance && point_center.getPosition().z < sphere->getPosition().z + distance) {
-
-						
-						cout << "palla colpita" << endl;
-						cout << sphere->getPosition().y << endl;
-
-				
+						//Pallone colpito dalla macchina
+						//Se la macchina si muove --> la palla subisce una forza proporzionata e di segno uguale all'angolo e velocità della macchina
 						if (marcia) {
-
 							sphere->applyCentralForce(ofVec3f(-(speed * sin(theta / 360 * 2 * PI) / 300), 0, -(speed * cos(theta / 360 * 2 * PI) / 300)));
 						}
-
 						else if (retromarcia) {
-
 							sphere->applyCentralForce(ofVec3f((speed * sin(theta / 360 * 2 * PI) / 300), 0, (speed * cos(theta / 360 * 2 * PI) / 300)));
-
 						}
 					}
 				}
 			}
 				
-
-				
-	
-			/*car->remove();
-			car = new ofxBulletBox();
-			car->create(world.world, ofVec3f(point_center.getPosition()), 1, 7, 4, 10);
-			car->add();
-			car->draw();*/
-
-			//box.draw();
-			//box.drawAxes(1000);
-
-			//Il modello 3D segue l'oggetto CAR (BULLET BOX)
-			ofFill();
-			//textureCar.bind();
-			//octaneModel.drawFaces();
-			//octaneModel.setRotation(0, car->getRotationAngle(), car->getRotation().x, car->getRotation().y, car->getRotation().z); NON FUNZIONA LA ROTAZIONE
-			//octaneModel.setPosition(car->getPosition().x, car->getPosition().y - 1, car->getPosition().z + 1);
-			//textureCar.unbind();
 			cam.end();
 
-
-			if (!completed) {
+			if (!completed) { //Se si è ancora in gioco ed i livelli non sono stati completati --> stampo il livello attuale ed i secondi rimanenti
 				ofSetColor(0,0,0);
 				subtitle.drawString("Level " + ofToString(readLevel), ofGetWidth() / 2 - 150, 100);
 				label.drawString("Second remaining " + ofToString(timer), ofGetWidth() / 2 - 75, 150);
 			}
 
-
-			glDisable(GL_DEPTH_TEST);
+			//glDisable(GL_DEPTH_TEST);
 			ofSetColor(34, 169, 0);
 
-
-			if (levels > 10 && !completed) {
+			if (levels > 10 && !completed) { //Se si è in gioco e si supera il 10 livello la partita si dichiara completata
 
 				completed = true;
 				timer = end_timer - ofGetSystemTimeMillis();
 				timer = timer / 1000;
-				timeCompleted = (time_game/1000) - timer;
+				timeCompleted = (time_game/1000) - timer; //Tempo di completamento gioco
 				readLevel = levels;
 
-
 			}
 
-			//EFFECT WHEN SCORE
+			//Stampa a video una stringa quando si effettua gol
 			if (ofGetSystemTimeMillis() < end_effect) {
-
 				if (levels < 10) {
 					subtitle.drawString("GOOOOOL", ofGetWidth() / 2 - 150, ofGetHeight() / 2);
-					//ofBackground(ofRandom(256), ofRandom(256), ofRandom(256));
 				}
-
 			}
 
+			//Verifica timer se la partita è conclusa
 			if (num_match > 0) {
-
-
-				//if(endsphere->applyCentralForce(ofVec3f(0, 000000000000001, 0));
-
 				if (ofGetSystemTimeMillis() < end_timer) { //PARTITA IN CORSO
 
 					timer = end_timer - ofGetSystemTimeMillis();
@@ -528,18 +355,12 @@ void ofApp::draw() {
 
 				else if (ofGetSystemTimeMillis() > end_timer) { //PARTITA CONCLUSA 
 
-
 					completed = true;
 					timeCompleted = time_game / 1000;
-
-
-				
 				}
 
 
-				if (completed) { // match concluso
-
-					//background.draw(0, 0);
+				if (completed) { // Se match concluso stampa a video le stringe
 				
 					if (levels > 10) {
 
@@ -550,7 +371,7 @@ void ofApp::draw() {
 						subtitle.drawString("Game over!\nLevel completed: " + ofToString(readLevel - 1) + "\nTime: " + ofToString(timeCompleted) + " seconds", ofGetWidth() / 2 - ofGetWidth() / 4, ofGetHeight() / 2 - 75);
 					}
 			
-					if (!savedHistory) {
+					if (!savedHistory) { //Se non è stato salvata la partita nella cronologia
 
 						//Salvataggio punteggio
 						ofstream fileOUT("data/history.txt", ios::app); // open history.txt in append mode
@@ -558,43 +379,25 @@ void ofApp::draw() {
 						fileOUT.close(); // close the file
 						savedHistory = true;
 
-						//fischio finale
+						//Fischio finale
 						whistle.play();
 						whistle.setVolume(volume);
 						whistle.setLoop(false);
-						cout << "fischio finale" << endl;
-
 					}
 				}
 
-
 			}
 
-			
-			else {
-				//ofDrawBitmapString("Premi 'Start Game' per iniziare a giocare!", (ofGetWidth() / 2), 25);
-
-			}
-
-			
-
+			generalSound.setVolume(volume);
 
 			/***** RENDER GUI *****/
 			ofDisableDepthTest();
-
-
-			gui_game.draw();
-			
+			gui_game.draw();		
 			gui_stats.draw();
-	
 
-			if (setting) {
+			if (setting) { //Se il toogle option e setting è attivo
 				gui_setting.draw();
 			}
-
-			//MUSIC
-			generalSound.setVolume(volume);
-
 
 			if (num_match > 0) {
 				gui_stats.clear();
@@ -602,7 +405,7 @@ void ofApp::draw() {
 				gui_stats.draw();
 			}
 
-			if (lockCamera) {
+			if (lockCamera) { //Se il toogle blocca camera è attivo
 				cam.disableMouseInput();
 			}
 
@@ -611,107 +414,78 @@ void ofApp::draw() {
 				cam.enableMouseInput();
 			}
 
-			//ofEnableDepthTest();
-
 		}
 	}
 }
 
-
-
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	if (key == 'w') {
 
-		cout << wheel1.getPosition().x << endl;
+	if (key == 'w') { 
 
-		if (controlArena()) {
-
+		if (controlArena()) { //Verifica se la macchina è dentro l'arena
 			if (speed <= 0) {
 				marcia = true;
 			}
-			else if (!marcia) {
-
+			else if (!marcia) { //Rallenta la vettura se si sta muovendo nella direzione opposta
 				speed = speed / 2.5;
 			}
 		}
-
-		else if (!controlArena()) {
-
+		else if (!controlArena()) { //Macchina bloccata
 			if (point_center.getPosition().x - distance + max_speed  > 0 || point_center.getPosition().x + distance - max_speed > left.getPosition().x ||
 				point_center.getPosition().z - distance + max_speed > 0 || point_center.getPosition().z + distance - max_speed > front.getPosition().z ) {
-				cout << "macchina piantata" << endl;
 
+				//Non può andare avanti, solo indietro
 				if (speed <= 0) {
 					retromarcia = true;
 				}
-				else if (!retromarcia) {
-
+				else if (!retromarcia) { 
 					speed = speed / 2.5;
 				}
-
+				//Aggiorno la velocità
 				speed = speed + 0.005;
 				wheel_deg = wheel_deg + 0.01;
-				cout << speed << endl;
-				moveW();
+				moveW(); //Richiamo la funzione 
 			}
 
-
-
-
-
 		}
-
 	}
 
-
 	if (key == 's') {
-	
-
-
-		if (controlArena()) {
-
+		if (controlArena()) { //Verifica se la macchina è dentro l'arena
 			if (speed <= 0) {
 				retromarcia = true;
 			}
-			else if (!retromarcia) {
-
+			else if (!retromarcia) { //Rallenta la vettura se si sta muovendo nella direzione opposta
 				speed = speed / 2.5;
 			}
 		}
 
-		else if (!controlArena()) {
-		
-
+		else if (!controlArena()) { //Macchina bloccata
 			if (point_center.getPosition().x - distance + max_speed > 0 || point_center.getPosition().x + distance - max_speed > left.getPosition().x ||
 				point_center.getPosition().z - distance + max_speed > 0 || point_center.getPosition().z + distance - max_speed > front.getPosition().z) {
-
 				if (speed <= 0) {
 					retromarcia = true;
 				}
 				else if (!retromarcia) {
-
 					speed = speed / 2.5;
 				}
-
+				//Aggiorno la velocità
 				speed = speed + 0.005;
 				wheel_deg = wheel_deg + 0.01;
 				cout << speed << endl;
-				moveS();
+				moveS(); //Richiamo la funzione 
 			}
 
 		}
 	}
 
 	if (key == 'a') {
-
 		if (controlArena()) {
-			if (!rotation_left) {
-
+			if (!rotation_left) { //Le ruote davanti simulano la sterzata
 				wheel1.rotateDeg(45, ofVec3f(0, 1, 0));
 				wheel2.rotateDeg(45, ofVec3f(0, 1, 0));
-
-				rotation_left = true;
+				rotation_left = true; //Rotazione a sinistra attiva
 
 			}
 		}
@@ -719,10 +493,8 @@ void ofApp::keyPressed(int key) {
 	}
 
 	if (key == 'd') {
-
 		if (controlArena()) {
-			if (!rotation_right) {
-
+			if (!rotation_right) { //Le ruote davanti simulano la sterzata
 				wheel1.rotateDeg(-45, ofVec3f(0, 1, 0));
 				wheel2.rotateDeg(-45, ofVec3f(0, 1, 0));
 				rotation_right = true;
@@ -730,67 +502,46 @@ void ofApp::keyPressed(int key) {
 		}
 	}
 
-	if (key == 'e') {
-
-
+	/*if (key == 'e') {
 		activeRules=false;
 		activeHistory = false;
-
-	}
+	}*/
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
 
 	if (key == 'a') {
-
-		if (rotation_left) {
-
+		if (rotation_left) { //Rotazione disattivata
 			wheel1.rotateDeg(-45, ofVec3f(0, 1, 0));
 			wheel2.rotateDeg(-45, ofVec3f(0, 1, 0));
-
 			rotation_left = false;
-
 		}
-
 	}
 
 	if (key == 'd') {
-
-
 		if (rotation_right) {
-
 			wheel1.rotateDeg(45, ofVec3f(0, 1, 0));
 			wheel2.rotateDeg(45, ofVec3f(0, 1, 0));
 			rotation_right = false;
-
 		}
-
 	}
 
 
 	if (key == 'w') {
-
-		sphere->applyCentralForce(ofVec3f(0.0000001, 0, 0.0000001));
-		if (marcia) {
-			marcia = false;
-			rallentamento_marcia = true;
+		if (marcia) { 
+			marcia = false; //Disattivata la marcia in avanti
+			rallentamento_marcia = true; //Attivo il rallentamento marcia in avanti
 		}
 
 	}
 
 	if (key == 's') {
-
-		sphere->applyCentralForce(ofVec3f(0.0000001, 0 , 0.0000001));
-		if (retromarcia) {
-			retromarcia = false;
-			rallentamento_marcia = false;
+		if (retromarcia) { 
+			retromarcia = false; //Disattivata la marcia indietro
+			rallentamento_marcia = false; //Disattivo il rallentamento marcia in avanti
 		}
-		
-
 	}
-
-
 }
 
 //--------------------------------------------------------------

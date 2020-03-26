@@ -1,67 +1,47 @@
 
 //--------------------------------------------------------------
-void ofApp::resetBall() {
+void ofApp::resetBall() { //Funzione che crea un nuovo pallone eliminando la precedente istanza
 
-	sphere->remove();
-
-	sphere = new ofxBulletSphere();
-	sphere->create(world.world, ofVec3f(50, 50, 50), 0.000001, ball_radius);
-
-	sphere->add();
-	sphere->setRestitution(ball_restitution);
+	sphere->remove(); //Rimozione del pallone
+	sphere = new ofxBulletSphere(); //Nuova instanza
+	sphere->create(world.world, ofVec3f(50, 50, 50), 0.000001, ball_radius); //Posizione iniziale pallone; Massa del pallone --> 0.00001 (molto leggera)
+	sphere->add(); //Aggiunto il pallone al world
+	sphere->setRestitution(ball_restitution); 
 
 }
 
 //--------------------------------------------------------------
 void ofApp::resetCar() {
 
-	/*car->remove();
-	car = new ofxBulletBox();
-	car->create(world.world, ofVec3f(80, 30, 80), 1, 5, 4, 9);
-	car->add();
-	car->setRestitution(0);*/
-
-
-	//wheel1.setOrientation(wheel1.getOrientationEulerDeg());
-
+	//Richiamo la funzione crea macchina e la inizializzo
 	createCar();
-	eur_deg = wheel1.getOrientationEulerDeg();
 	wheel_deg = speed + 1;
 	theta = 0;
 }
 
-void ofApp::resetTarget() {
+void ofApp::resetTarget() { //Funzione che aggiora la grandezza della porta dove segnare
 
-	target.remove();
+	target.remove(); //Rimozione porta
 
-	if (levels == 5) {
-
-		//Riduzione dimensioni porta e traslazione porta
-		target.create(world.world, ofVec3f(xGround / 2, (yBack1) / 2  - overflow_target + yTarget / 2, 0), 0, xTarget, yTarget + overflow_target, zTarget);
-	}
-	else {
-		//Riduzione dimensioni porta
-		target.create(world.world, ofVec3f(xGround / 2, (yBack1 - overflow_target) / 2 + yTarget / 2, 0), 0, xTarget, yTarget + overflow_target, zTarget);
-	}
+	//Creazione di una nuova porta con l'overflow --> riduzione dimensioni porta e traslazione porta
+	target.create(world.world, ofVec3f(xGround / 2, (yBack1 - overflow_target) / 2 + yTarget / 2, 0), 0, xTarget, yTarget + overflow_target, zTarget);
 	target.setProperties(.25, .95);
 	target.add();
 
-
-	
 }
 
 //--------------------------------------------------------------
-void ofApp::play() {
-	initialMenu = false;
+void ofApp::play() { // Funzione richiama quando si preme Start Game
+	initialMenu = false; //Disabilito il menù iniziale
+	//Richiamo le funzioni che creano la macchina e il pallone
 	resetBall();
 	resetCar();
-	levels = 1;
+	levels = 1; //Livello iniziale --> 1
 
 	//Punteggio
-	ofSetColor(255, 255, 255);
-	score = 0;
+	//ofSetColor(255, 255, 255);
+	score = 0; 
 	num_match++;
-	//car->activate();
 
 	//COUNTDOWN
 	start_countdown = ofGetSystemTimeMillis();
@@ -74,71 +54,73 @@ void ofApp::play() {
 
 }
 
-void ofApp::restartPlay() {
+void ofApp::restartPlay() { // Funzione richiama quando si preme Restart Game
 
+	//Richiamo le funzioni che creano la macchina e il pallone
 	resetBall();
 	resetCar();
-	num_match++;
-	completed = false;
-	savedHistory = false;
+
+	completed = false; //La partita non sarà più dichiarata come completata
+	savedHistory = false; //La partita non sarà più dichiarata come salvata
 	levels = 1;
+
 	//Punteggio
-	ofSetColor(255, 255, 255);
 	score = 0;
-	//car->activate();
-	//TIMER
+	num_match++;
+
+	//TIMER MATCH
 	start_timer = ofGetSystemTimeMillis();
 	end_timer = start_timer + time_game;
 	
 }
 
-void ofApp::settingLevel() {
+void ofApp::settingLevel() { // Gestione dei livell di gioco //
 
-	if (levels == 1) {
-		overflow_target = 0;
+	if (levels == 1) { //Grandezza porta standard
+		overflow_target = 0; 
 		resetTarget();
 	}
 
-	if (levels == 2) {
+	if (levels == 2) { //Grandezza porta ridotta di 15
 		overflow_target = 15;
 		resetTarget();
 	}
 
-	if (levels == 3) {
+	if (levels == 3) { //Grandezza porta ridotta di 20
 		overflow_target = 20;
 		resetTarget();
 	}
 
-	if (levels == 4 && !checkLevel4) {
+	if (levels == 4) {
 		level4();
 	}
 
-	if (levels == 5 && !checkLevel5) {
+	if (levels == 5) {
 		level5();
 	
 	}
 
-	if (levels > 5) {
+	if (levels > 5) {  // Grandezza porta ridotta di 15
 
-		overflow_target = 15;
+		overflow_target = 15; 
 		resetTarget();
 	}
 
 
-	if (levels == 6 && !checkLevel6) {
+	if (levels == 6) {
 		level6();
 	}
 
-	if (levels == 7 && !checkLevel7) {
+	if (levels == 7) {
 
 		level7();
 	}
 
-	if (levels == 8 &&  !checkLevel6 && !checkLevel7) {
+	if (levels == 8) {
 		level8();
 	}
 
-	if (levels == 9 && !checkLevel9) {
+	if (levels == 9) {
 		level9();
 	}
 
@@ -147,147 +129,96 @@ void ofApp::settingLevel() {
 		level10();
 	}
 
-
 }
 
 void ofApp::level4() {
 
-
-	if (!checkLevel4) {
-
-		
+		//Aggiornamento porta-->rimozione e creazione secondo un overflow_target
 		target.remove();
-		//Riduzione dimensioni porta
 		target.create(world.world, ofVec3f(xGround / 2, (yBack1 - overflow_target) / 2 + yTarget / 2, 0), 0, xTarget, yTarget + overflow_target, zTarget);
 		target.setProperties(.25, .95);
 		target.add();
-
-		//Riduzione dimensioni porta e traslazione porta
-		//target.create(world.world, ofVec3f(xGround / 2, (yBack1) / 2  - overflow + yTarget / 2, 0), 0, xTarget, yTarget + overflow, zTarget);
-
-		
-		if (overflow_target <= 30 && !reverseLevel4) {
-			
-			overflow_target = (overflow_target + 0.5);
-			cout << overflow_target << endl;
-
-			if (overflow_target > 30) {
-
+		//SCORRIMENTO VERSO GIU'
+		if (overflow_target <= 30 && !reverseLevel4) {	 //Se l'overflow è <=30 e l'andamento è verso giù
+			overflow_target = (overflow_target + 0.5); //Aggiorna l'overflow riducendo la porta
+			if (overflow_target > 30) { //Se dopo l'aggiornamento supera 30 --> INVERSIONE
 				reverseLevel4 = !reverseLevel4;
-				cout << reverseLevel4 << endl;
 			}
 	
 		}
-
+		//SCORRIMETNO VERSO SOPRA
 		else if (reverseLevel4) {
-
-			overflow_target = (overflow_target - 0.5);
-			cout << overflow_target << endl;
-			
-			if (overflow_target < 0) {
+			overflow_target = (overflow_target - 0.5);	 //Aggiorna l'overflow ingrandendo la porta
+			if (overflow_target < 0) { //Se dopo l'aggiornamento è minore di zero --> INVERSIONE
 
 				reverseLevel4 = !reverseLevel4;
 
 			}
 		}
 
-		//checkLevel1 = !checkLevel1;
-		
-	}
+
 }
 
 
 void ofApp::level5() {
 
-
-	if (!checkLevel5) {
-
-
 		target.remove();
 		//Riduzione dimensioni porta
 		target.create(world.world, ofVec3f(xGround / 2, (yBack1 - overflow_target) / 2 + yTarget / 2, 0), 0, xTarget, yTarget + overflow_target, zTarget);
 		target.setProperties(.25, .95);
 		target.add();
-
-		//Riduzione dimensioni porta e traslazione porta
-		//target.create(world.world, ofVec3f(xGround / 2, (yBack1) / 2  - overflow + yTarget / 2, 0), 0, xTarget, yTarget + overflow, zTarget);
-
-
-		if (overflow_target <= 30 && !reverseLevel5) {
-
-			overflow_target = (overflow_target + 1.5);
-			cout << overflow_target << endl;
-
-			if (overflow_target > 30) {
-
+		
+		//SCORRIMENTO VERSO GIU'
+		if (overflow_target <= 30 && !reverseLevel5) { //Se l'overflow è <=30 e l'andamento è verso giù
+			overflow_target = (overflow_target + 1.5); //Aggiorna l'overflow riducendo la porta
+			if (overflow_target > 30) { //Se dopo l'aggiornamento supera 30 --> INVERSIONE
 				reverseLevel5 = !reverseLevel5;
-				cout << reverseLevel5 << endl;
 			}
 
 		}
 
+		//SCORRIMETNO VERSO SOPRA
 		else if (reverseLevel5) {
-
-			overflow_target = (overflow_target - 1.5);
-			cout << overflow_target << endl;
-
-			if (overflow_target < 0) {
-
+			overflow_target = (overflow_target - 1.5); //Aggiorna l'overflow ingrandendo la porta
+			if (overflow_target < 0) { //Se dopo l'aggiornamento è minore di zero --> INVERSIONE
 				reverseLevel5 = !reverseLevel5;
-
 			}
 		}
 
-		//checkLevel1 = !checkLevel1;
 
-	}
 }
 
 void ofApp::level6() {
 
+		if (obs6 != nullptr) { //Verifico che ha già dei puntamenti --> se presente lo elimino
 
-	if (!checkLevel6) {
-
-		if (obs6 != nullptr) {
-
-			cout << "Prova" << endl;
-			// the remove function is called internally in the deconstructor
 			delete obs6;
 			obs6 = nullptr;
 
 		}
 
+		//Creazione ostacolo in base all'overflow
 		obs6 = new ofxBulletBox();
 		obs6->create(world.world, ofVec3f(xGround - overflow, yOst6 / 2, zGround / 2 ), 0, xOst6, yOst6, zOst6);
 		obs6->setProperties(.25, .95);
 		obs6->add();
 
+		//Scorrimento verso sinistra
 		if (overflow <= xGround && !reverseLevel6) {
-
 			overflow = (overflow + 1);
-			cout << overflow << endl;
-
 			if (overflow > xGround) {
-
 				reverseLevel6 = !reverseLevel6;
-				cout << reverseLevel6 << endl;
 			}
 
 		}
 
+		// Scorrimento verso destra
 		else if (reverseLevel6) {
-
 			overflow = (overflow - 1);
-			cout << overflow << endl;
-
 			if (overflow < 0) {
-
 				reverseLevel6 = !reverseLevel6;
-
 			}
 		}
-
-	}
 
 
 }
@@ -300,76 +231,55 @@ void ofApp::level7() {
 	/*RIMUOVE I PRECEDENTI OSTACOLI*/
 	
 	if (obs6 != nullptr) {
-
-		cout << "Prova" << endl;
-		// the remove function is called internally in the deconstructor
 		delete obs6;
 		obs6 = nullptr;
 
 	}
 
-	//ostacolo6->remove();
+	//Vengono creati lo stesso ma posizionati fuori l'arena e non mostrati a video 
 	obs6 = new ofxBulletBox();
 	obs6->create(world.world, ofVec3f((xGround - overflow)*-10, yBack1 / 2, -50), 0, xOst6, yOst6, zOst6);
 	obs6->setProperties(.25, .95);
 	obs6->add();
 
 
-	if (obs7 != nullptr) {
+	if (obs7 != nullptr) { //Verifico che ha già dei puntamenti --> se presente lo elimino
 
-		cout << "Prova" << endl;
-		// the remove function is called internally in the deconstructor
 		delete obs7;
 		obs7 = nullptr;
 
 	}
 
-	if (!checkLevel7) {
-
+	//Creazione ostacolo in base all'overflow
 		obs7 = new ofxBulletBox();
 		obs7->create(world.world, ofVec3f(xGround/2 , yOst7 / 2 + overflow, zGround / 4), 0, xOst7, yOst7, zOst7);
 		obs7->setProperties(.25, .95);
 		obs7->add();
 
+		//Scorrimento verso sopra
 		if (overflow <= yBack1 && !reverseLevel7) {
-
 			overflow = (overflow + 1);
-			cout << overflow << endl;
-
 			if (overflow > yBack1) {
-
 				reverseLevel7 = !reverseLevel7;
-				cout << reverseLevel7 << endl;
 			}
-
 		}
-
+		//Scorrimento verso sotto
 		else if (reverseLevel7) {
-
 			overflow = (overflow - 1);
-			cout << overflow << endl;
-
 			if (overflow < 0) {
-
 				reverseLevel7 = !reverseLevel7;
-
 			}
 		}
-
-	}
 
 
 }
 
 
-void ofApp::level8() {
+void ofApp::level8() { //Livello 6 + Livello 7
 
 	/*RIMUOVE I PRECEDENTI OSTACOLI*/
-
 	if (obs6 != nullptr) {
 
-		cout << "Prova" << endl;
-		// the remove function is called internally in the deconstructor
 		delete obs6;
 		obs6 = nullptr;
 
@@ -377,85 +287,50 @@ void ofApp::level8() {
 
 	if (obs7 != nullptr) {
 
-		cout << "Prova" << endl;
-		// the remove function is called internally in the deconstructor
 		delete obs7;
 		obs7 = nullptr;
 
 	}
 
-	if (!checkLevel6) {
-
+	// Level 6 //
 		obs6 = new ofxBulletBox();
 		obs6->create(world.world, ofVec3f(xGround - overflow, yOst6 / 2, zGround / 2), 0, xOst6, yOst6, zOst6);
 		obs6->setProperties(.25, .95);
 		obs6->add();
 
 		if (overflow <= xGround && !reverseLevel6) {
-
 			overflow = (overflow + 1);
-			cout << overflow << endl;
-
 			if (overflow > xGround) {
-
 				reverseLevel6 = !reverseLevel6;
-				cout << reverseLevel6 << endl;
 			}
-
 		}
-
 		else if (reverseLevel6) {
-
 			overflow = (overflow - 1);
-			cout << overflow << endl;
-
 			if (overflow < 0) {
-
 				reverseLevel6 = !reverseLevel6;
-
 			}
 		}
+		// Level 7 //
 
-	}
-
-	if (!checkLevel7) {
-
-	
 		obs7 = new ofxBulletBox();
 		obs7->create(world.world, ofVec3f(xGround / 2, yOst7 / 2 + overflow, zGround / 4), 0, xOst7, yOst7, zOst7);
 		obs7->setProperties(.25, .95);
 		obs7->add();
 
 		if (overflow <= xGround && !reverseLevel7) {
-
 			overflow = (overflow + 1);
-			cout << overflow << endl;
-
 			if (overflow > xGround) {
-
 				reverseLevel7 = !reverseLevel7;
-				cout << reverseLevel7 << endl;
 			}
-
 		}
 
 		else if (reverseLevel7) {
-
 			overflow = (overflow - 1);
-			cout << overflow << endl;
-
 			if (overflow < 0) {
-
 				reverseLevel7 = !reverseLevel7;
-
 			}
-		}
-
-	}
-
+		}		
 }
-
-
 
 
 void ofApp::level9() {
@@ -464,14 +339,12 @@ void ofApp::level9() {
 
 	if (obs6 != nullptr) {
 
-		cout << "Prova" << endl;
-		// the remove function is called internally in the deconstructor
 		delete obs6;
 		obs6 = nullptr;
 
 	}
 
-	//ostacolo6->remove();
+	//Vengono creati lo stesso ma posizionati fuori l'arena e non mostrati a video 
 	obs6 = new ofxBulletBox();
 	obs6->create(world.world, ofVec3f((xGround - overflow)*-10, 0, -50), 0, xOst6, yOst6, zOst6);
 	obs6->setProperties(.25, .95);
@@ -479,91 +352,57 @@ void ofApp::level9() {
 
 	if (obs7 != nullptr) {
 
-		cout << "Prova" << endl;
-		// the remove function is called internally in the deconstructor
 		delete obs7;
 		obs7 = nullptr;
 
 	}
 
-	//ostacolo6->remove();
 	obs7 = new ofxBulletBox();
 	obs7->create(world.world, ofVec3f((xGround - overflow)*-10, 0, -50), 0, xOst6, yOst6, zOst6);
 	obs7->setProperties(.25, .95);
 	obs7->add();
 
-	if (!checkLevel9) {
+
 
 		obs9 = new ofxBulletBox();
 		obs9->create(world.world, ofVec3f(xBack1 + overflow, yOst9/2, 0), 0, xOst9, yOst9, zOst9);
 		obs9->setProperties(.25, .95);
 		obs9->add();
-
+		//Scorrimento verso destra
 		if (overflow <= xTarget && !reverseLevel9) {
-
 			overflow = (overflow + 1.25);
-			cout << overflow << endl;
-
 			if (overflow > xTarget) {
-
 				reverseLevel9 = !reverseLevel9;
-			
 			}
 
 		}
-
+		//Scorrimento verso sinistra
 		else if (reverseLevel9) {
-
 			overflow = (overflow - 1.25);
-			cout << overflow << endl;
-
 			if (overflow < 0) {
-
 				reverseLevel9 = !reverseLevel9;
-
 			}
 		}
-
-	}
-
 }
 
-
-
-void ofApp::level10() {
-
-	if (!checkLevel10) {
-
+void ofApp::level10() { //Uguale al 10 ma overflow maggiore e quindi movimento più veloce
 		obs9 = new ofxBulletBox();
 		obs9->create(world.world, ofVec3f(xBack1 + overflow, yOst9 / 2, 0), 0, xOst9, yOst9, zOst9);
 		obs9->setProperties(.25, .95);
 		obs9->add();
 
 		if (overflow <= xTarget && !reverseLevel10) {
-
 			overflow = (overflow + 2.25);
-			cout << overflow << endl;
-
 			if (overflow > xTarget) {
-
-				reverseLevel10 = !reverseLevel10;
-			
+				reverseLevel10 = !reverseLevel10;		
 			}
-
 		}
 
 		else if (reverseLevel10) {
-
 			overflow = (overflow - 2.25);
-			cout << overflow << endl;
-
 			if (overflow < 0) {
 
 				reverseLevel10 = !reverseLevel10;
-
 			}
 		}
-
-	}
-
 }

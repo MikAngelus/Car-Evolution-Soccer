@@ -139,17 +139,14 @@ public:
 
 	/*LEVEL 4*/
 	void level4(); //Funzione che chiama il livello 4
-	bool checkLevel4 = false; //Verifica se il livello è stato superato
 	bool reverseLevel4 = false; //Variabile che indica quando effettuare l'inversione di marcia dell'ostacolo
 
 	/*LEVEL 5*/
 	void level5(); // Funzione che chiama il livello 5
-	bool checkLevel5 = false; //Verifica se il livello è stato superato
 	bool reverseLevel5 = false; //Variabile che indica quando effettuare l'inversione di marcia dell'ostacolo
 
 	/*LEVEL 6*/
 	void level6(); // Funzione che chiama il livello 6
-	bool checkLevel6 = false; //Verifica se il livello è stato superato
 	bool reverseLevel6 = false; //Variabile che indica quando effettuare l'inversione di marcia dell'ostacolo
 
 	// OSTACOLO 6//
@@ -160,7 +157,6 @@ public:
 
 	/*LEVEL 7*/
 	void level7();
-	bool checkLevel7 = false;
 	bool reverseLevel7 = false;
 
 	// OSTACOLO 7//
@@ -171,12 +167,10 @@ public:
 
 	/*LEVEL 8*/
 	void level8();
-	bool checkLevel8 = false;
 	bool reverseLevel8 = false;
 
 	/*LEVEL 9*/
 	void level9();
-	bool checkLevel9 = false;
 	bool reverseLevel9 = false;
 
 	// OSTACOLO 9//
@@ -187,7 +181,6 @@ public:
 
 	/*LEVEL 10*/
 	void level10();
-	bool checkLevel10 = false;
 	bool reverseLevel10 = false;
 
 	int readLevel; //Variabile che legge l'attuale livello giocato
